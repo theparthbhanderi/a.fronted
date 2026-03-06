@@ -557,19 +557,19 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Mobile Live Preview Container (Only visible below XL, inserted between steps 1 and 2) ── */}
-          <div className="xl:hidden flex flex-col items-center w-full my-2">
-            <div className="flex items-center gap-2 self-start mb-4">
-              <h2 className="text-sm font-bold text-white">Live Preview</h2>
-              <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
-            </div>
+          <div className="xl:hidden w-full px-2 sm:px-0">
+            <div className="flex flex-col bg-slate-900/40 rounded-2xl border border-slate-700 p-4 mt-2">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-bold text-white">Live Preview</h2>
+                <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
+              </div>
 
-            <div className="flex flex-col items-center justify-center w-full h-auto overflow-visible bg-white/5 pt-4 pb-3 rounded-xl border border-slate-700 px-2 sm:px-0">
-              <div className="flex justify-center w-full">
-                <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col items-center space-y-5">
-                  <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-front-mobile">
+              <div className="flex flex-col items-center w-full h-auto overflow-visible">
+                <div className="origin-top scale-[0.95] sm:scale-100 flex flex-col items-center gap-6">
+                  <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center bg-white" id="aadhaar-front-mobile">
                     <FrontCard data={data} photoSrc={photo} />
                   </div>
-                  <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-back-mobile">
+                  <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center bg-white" id="aadhaar-back-mobile">
                     <BackCard data={data} />
                   </div>
                 </div>
