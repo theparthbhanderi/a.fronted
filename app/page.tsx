@@ -562,13 +562,15 @@ export default function CardGeneratorPage() {
               <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
             </div>
 
-            <div className="flex flex-col items-center justify-center w-full overflow-hidden bg-white/5 py-4 pb-4 rounded-xl border border-slate-700">
-              <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col items-center justify-center space-y-6" style={{ height: 'fit-content' }}>
-                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-front-mobile">
-                  <FrontCard data={data} photoSrc={photo} />
-                </div>
-                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-back-mobile">
-                  <BackCard data={data} />
+            <div className="flex flex-col items-center justify-center w-full h-auto overflow-visible bg-white/5 pt-4 pb-4 rounded-xl border border-slate-700">
+              <div className="flex justify-center w-full">
+                <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col items-center gap-6">
+                  <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-front-mobile">
+                    <FrontCard data={data} photoSrc={photo} />
+                  </div>
+                  <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-back-mobile">
+                    <BackCard data={data} />
+                  </div>
                 </div>
               </div>
             </div>
