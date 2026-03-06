@@ -1,101 +1,771 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useRef, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { QRCodeSVG } from 'qrcode.react';
+
+// ─── Types ─────────────────────────────────────────────────────────────────────
+interface CardData {
+  nameLocal: string;
+  nameEnglish: string;
+  dob: string;
+  gender: string;
+  genderLocal: string;
+  idNumber: string;
+  issueDate: string;
+  addressLocal: string;
+  addressEnglish: string;
+  vid: string;
+  updateDate: string;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fmt12 = (n: string) =>
+  n.replace(/\D/g, '').slice(0, 12).replace(/(\d{4})(\d{4})(\d+)/, '$1 $2 $3');
+
+const fmt16 = (n: string) =>
+  n.replace(/\D/g, '').slice(0, 16).replace(/(\d{4})(\d{4})(\d{4})(\d+)/, '$1 $2 $3 $4');
+
+// ─── Dynamic QR Code ──────────────────────────────────────────────────────────
+const DynamicQR = ({ data }: { data: CardData }) => {
+  const uid = data.idNumber.replace(/\D/g, '');
+  const yob = data.dob.split('/').pop() || data.dob;
+  const addr = data.addressEnglish.replace(/\n/g, ', ');
+
+  // Dense XML string that updates on every keystroke
+  const qrValue = `<?xml version="1.0" encoding="UTF-8"?><PrintLetterBarcodeData uid="${uid}" name="${data.nameEnglish}" gender="${data.gender.charAt(0).toUpperCase()}" yob="${yob}" co="${addr}" house="" street="" lm="" loc="" vtc="" dist="" state="Gujarat" pc="364505" dob="${data.dob}" />`;
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div style={{ width: 135, height: 135, background: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <QRCodeSVG value={qrValue} size={130} level="M" includeMargin={false} />
     </div>
+  );
+};
+
+// ─── Front Card ───────────────────────────────────────────────────────────────
+const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null }) => (
+  <div style={{
+    width: 450, height: 290, background: '#fff',
+    border: '1px solid #d1d5db',
+    fontFamily: 'Arial, Helvetica, sans-serif', position: 'relative', overflow: 'hidden',
+    display: 'flex', flexDirection: 'column'
+  }}>
+    {/* ── Header ── */}
+    <img
+      src="/images/ashoka-emblem.png"
+      alt="Front Header"
+      style={{ width: '100%', height: 48, objectFit: 'fill', display: 'block', flexShrink: 0 }}
+    />
+
+    {/* ── Body Area ── */}
+    <div style={{ display: 'flex', padding: '4px 12px 0 6px', flex: 1 }}>
+
+      {/* Left col: vertical issue-date text + photo */}
+      <div style={{ display: 'flex', gap: 3, alignItems: 'flex-start', flexShrink: 0 }}>
+        {/* Vertical rotated text */}
+        <div style={{
+          writingMode: 'vertical-rl', transform: 'rotate(180deg)',
+          fontSize: 7.5, fontWeight: 'normal', color: '#000', whiteSpace: 'nowrap',
+          marginTop: 2, letterSpacing: 0.3, fontFamily: 'Arial, sans-serif'
+        }}>
+          Aadhaar no. issued: {data.issueDate}
+        </div>
+        {/* Passport photo */}
+        <div style={{
+          width: 90, height: 112,
+          background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          overflow: 'hidden', marginTop: 1, border: '1px solid #aaa'
+        }}>
+          {photoSrc ? (
+            <img src={photoSrc} alt="portrait" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <span style={{ fontSize: 9, color: '#9ca3af', fontWeight: 'bold' }}>PHOTO</span>
+          )}
+        </div>
+      </div>
+
+      {/* Right col: identity details */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: 14, paddingTop: 2 }}>
+        {/* Gujarati name */}
+        <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.25 }}>
+          {data.nameLocal}
+        </div>
+        {/* English name */}
+        <div style={{ fontSize: 10.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.25 }}>
+          {data.nameEnglish}
+        </div>
+
+        {/* DOB */}
+        <div style={{ fontSize: 9.5, color: '#000', marginTop: 2, lineHeight: 1.3 }}>
+          <span style={{ fontWeight: 'normal', fontFamily: 'Arial, sans-serif' }}>જન્મ તારીખ/DOB: </span>
+          <span style={{ fontWeight: 'normal', fontFamily: 'Arial, sans-serif' }}>{data.dob}</span>
+        </div>
+        {/* Gender */}
+        <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: 'Arial, sans-serif', lineHeight: 1.3 }}>
+          {data.genderLocal}/ {data.gender}
+        </div>
+
+        {/* ── Red Disclaimer Box ── */}
+        <div style={{
+          border: '1px solid #cc3333',
+          padding: '3px 5px',
+          marginTop: 4,
+          width: '100%',
+          boxSizing: 'border-box'
+        }}>
+          {/* Gujarati disclaimer */}
+          <div style={{ fontSize: 7.5, color: '#000', lineHeight: 1.3, fontFamily: 'Arial, sans-serif' }}>
+            <span style={{ fontWeight: 'bold' }}>આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.</span><br />
+            <span style={{ fontWeight: 'normal' }}>તેનો ઉપયોગ માત્ર ચકાસણી (ઓનલાઇન પ્રમાણીકરણ અથવા ક્યુઆરકોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.</span>
+          </div>
+          {/* English disclaimer */}
+          <div style={{ fontSize: 7.5, color: '#000', lineHeight: 1.3, marginTop: 1, fontFamily: 'Arial, sans-serif' }}>
+            <span style={{ fontWeight: 'bold' }}>Aadhaar is proof of identity, not of citizenship or date of birth.</span><br />
+            <span style={{ fontWeight: 'normal' }}>It should be used with verification (online authentication, or scanning of QR code / offline XML).</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* ── Aadhaar Number ── */}
+    <div style={{ textAlign: 'center', flexShrink: 0, marginTop: 2, marginBottom: 2 }}>
+      <div style={{ fontSize: 22, fontWeight: 'bold', color: '#000', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: 2 }}>
+        {fmt12(data.idNumber)}
+      </div>
+    </div>
+
+    {/* ── Footer with red line above ── */}
+    <div style={{ borderTop: '3px solid #cc3333', flexShrink: 0 }}>
+      <img
+        src="/images/front-card-logo.png"
+        alt="Front Footer"
+        style={{ width: '100%', height: 42, objectFit: 'fill', display: 'block' }}
+      />
+    </div>
+  </div>
+);
+
+// ─── Back Card ────────────────────────────────────────────────────────────────
+const BackCard = ({ data }: { data: CardData }) => (
+  <div style={{
+    width: 450, height: 290, background: '#fff',
+    border: '1px solid #d1d5db',
+    fontFamily: 'Arial, Helvetica, sans-serif', position: 'relative', overflow: 'hidden',
+    display: 'flex', flexDirection: 'column'
+  }}>
+    {/* ── Header ── */}
+    <img
+      src="/images/aadhaar-logo.png"
+      alt="Back Header"
+      style={{ width: '100%', height: 48, objectFit: 'fill', display: 'block', flexShrink: 0 }}
+    />
+
+    {/* ── Body Area ── */}
+    <div style={{ display: 'flex', padding: '5px 12px 0 6px', gap: 8, flex: 1 }}>
+
+      {/* Left: vertical date text + address block */}
+      <div style={{ display: 'flex', gap: 4, flex: 1 }}>
+        {/* Vertical rotated date */}
+        <div style={{
+          writingMode: 'vertical-rl', transform: 'rotate(180deg)',
+          fontSize: 7.5, fontWeight: 'normal', color: '#000', whiteSpace: 'nowrap',
+          marginTop: 2, letterSpacing: 0.2, fontFamily: 'Arial, sans-serif', flexShrink: 0
+        }}>
+          Details as on: {data.updateDate}
+        </div>
+
+        {/* Address content */}
+        <div style={{ flex: 1, paddingTop: 3 }}>
+          {/* Gujarati address label */}
+          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
+            સરનામું :
+          </div>
+          {/* Gujarati address text */}
+          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', lineHeight: 1.35, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
+            {data.addressLocal}
+          </div>
+
+          {/* English address label */}
+          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', marginTop: 5, fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
+            Address:
+          </div>
+          {/* English address text */}
+          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', lineHeight: 1.35, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
+            {data.addressEnglish}
+          </div>
+        </div>
+      </div>
+
+      {/* Right: Dynamic QR Code */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 0, flexShrink: 0 }}>
+        <DynamicQR data={data} />
+      </div>
+    </div>
+
+    {/* ── Bottom: ID Number + VID ── */}
+    <div style={{ textAlign: 'center', marginBottom: 2, flexShrink: 0 }}>
+      <div style={{ fontSize: 22, fontWeight: 'bold', color: '#000', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: 2 }}>
+        {fmt12(data.idNumber)}
+      </div>
+      <hr style={{ border: 'none', borderTop: '1px solid #000', margin: '2px auto', width: '240px' }} />
+      <div style={{ fontSize: 11, fontWeight: 'bold', color: '#000', marginTop: 1, fontFamily: 'Arial, sans-serif', letterSpacing: 0.5 }}>
+        VID : {fmt16(data.vid)}
+      </div>
+    </div>
+
+    {/* ── Footer with red line ── */}
+    <div style={{ height: 26, width: '100%', borderTop: '2px solid #cc3333', flexShrink: 0 }}>
+      <img
+        src="/images/back-header-logo.png"
+        alt="Back Footer"
+        style={{ width: '100%', height: '100%', objectFit: 'fill', display: 'block', backgroundColor: '#fff' }}
+      />
+    </div>
+  </div>
+);
+
+// ─── Gender Mapping ───────────────────────────────────────────────────────────
+const GENDER_MAP: Record<string, string> = { MALE: 'પુરુષ', FEMALE: 'સ્ત્રી', OTHER: 'અન્ય' };
+
+// ─── Random Data Generators ──────────────────────────────────────────────────
+const rand12 = () => Array.from({ length: 12 }, () => Math.floor(Math.random() * 10)).join('');
+const rand16 = () => Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join('');
+
+const FIRST_NAMES_EN = ['Amit', 'Sanjay', 'Rajesh', 'Priya', 'Bhavna', 'Kiran', 'Jignesh', 'Meera', 'Hemal', 'Darshan'];
+const LAST_NAMES_EN = ['Patel', 'Shah', 'Modi', 'Desai', 'Bhatt', 'Mehta', 'Joshi', 'Pandya', 'Raval', 'Chauhan'];
+const FIRST_NAMES_GU = ['અમિત', 'સંજય', 'રાજેશ', 'પ્રિયા', 'ભાવના', 'કિરણ', 'જીગ્નેશ', 'મીરા', 'હેમલ', 'દર્શન'];
+const LAST_NAMES_GU = ['પટેલ', 'શાહ', 'મોદી', 'દેસાઈ', 'ભટ્ટ', 'મહેતા', 'જોશી', 'પંડ્યા', 'રાવલ', 'ચૌહાણ'];
+const CITIES = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Gandhinagar', 'Junagadh'];
+const CITIES_GU = ['અમદાવાદ', 'સુરત', 'વડોદરા', 'રાજકોટ', 'ભાવનગર', 'જામનગર', 'ગાંધીનગર', 'જૂનાગઢ'];
+const VILLAGES = ['Velavdar', 'Palitana', 'Sihor', 'Botad', 'Mahuva', 'Talaja', 'Gariadhar'];
+const VILLAGES_GU = ['વેળાવદર', 'પાલિતાણા', 'સિહોર', 'બોટાદ', 'મહુવા', 'તળાજા', 'ગારિયાધાર'];
+
+const pick = <T,>(a: T[]): T => a[Math.floor(Math.random() * a.length)];
+
+const randDate = (minY: number, maxY: number) => {
+  const y = minY + Math.floor(Math.random() * (maxY - minY));
+  const m = 1 + Math.floor(Math.random() * 12);
+  const d = 1 + Math.floor(Math.random() * 28);
+  return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
+};
+
+const generateRandomPerson = (): CardData & { _gender: string } => {
+  const gen = pick(['MALE', 'FEMALE']);
+  const fnI = Math.floor(Math.random() * FIRST_NAMES_EN.length);
+  const lnI = Math.floor(Math.random() * LAST_NAMES_EN.length);
+  const fatherI = Math.floor(Math.random() * FIRST_NAMES_EN.length);
+  const cityI = Math.floor(Math.random() * CITIES.length);
+  const villI = Math.floor(Math.random() * VILLAGES.length);
+  const pc = String(360001 + Math.floor(Math.random() * 40000));
+
+  return {
+    _gender: gen,
+    nameLocal: `${LAST_NAMES_GU[lnI]} ${FIRST_NAMES_GU[fnI]} ${FIRST_NAMES_GU[fatherI]}`,
+    nameEnglish: `${LAST_NAMES_EN[lnI]} ${FIRST_NAMES_EN[fnI]} ${FIRST_NAMES_EN[fatherI]}`,
+    dob: randDate(1950, 2000),
+    gender: gen,
+    genderLocal: GENDER_MAP[gen],
+    idNumber: rand12(),
+    issueDate: randDate(2010, 2024),
+    addressLocal: `નો ${gen === 'MALE' ? 'પુત્ર' : 'પુત્રી'}: ${FIRST_NAMES_GU[fatherI]}, ${VILLAGES_GU[villI]},\n${CITIES_GU[cityI]}, ગુજરાત - ${pc}`,
+    addressEnglish: `${gen === 'MALE' ? 'S/O' : 'D/O'}: ${FIRST_NAMES_EN[fatherI]}, ${VILLAGES[villI]},\nPO: ${VILLAGES[villI]}, DIST: ${CITIES[cityI]},\nGujarat - ${pc}`,
+    vid: rand16(),
+    updateDate: randDate(2023, 2026),
+  };
+};
+
+// ─── Validation ──────────────────────────────────────────────────────────────
+const isFutureDate = (dateStr: string) => {
+  const parts = dateStr.split('/');
+  if (parts.length !== 3) return false;
+  const d = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+  return d > new Date();
+};
+
+// ─── Format date from input[type=date] to DD/MM/YYYY ─────────────────────────
+const dateToDDMMYYYY = (isoDate: string) => {
+  if (!isoDate) return '';
+  const [y, m, d] = isoDate.split('-');
+  return `${d}/${m}/${y}`;
+};
+const ddmmyyyyToISO = (ddmm: string) => {
+  const parts = ddmm.split('/');
+  if (parts.length !== 3) return '';
+  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+};
+
+// ─── Address Formatter (2-3 lines max) ───────────────────────────────────────
+const formatAddress = (addr: string): string => {
+  if (!addr) return '';
+  // Remove any existing newlines, normalize
+  const flat = addr.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+  const parts = flat.split(', ');
+  if (parts.length <= 2) return flat;
+
+  // Group into 2-3 lines of ~40 chars each
+  const lines: string[] = [];
+  let current = '';
+  for (const part of parts) {
+    if (current && (current + ', ' + part).length > 40) {
+      lines.push(current);
+      current = part;
+    } else {
+      current = current ? current + ', ' + part : part;
+    }
+  }
+  if (current) lines.push(current);
+  return lines.slice(0, 3).join('\n');
+};
+
+// ─── Field Input ──────────────────────────────────────────────────────────────
+const Field = ({
+  label, value, onChange, placeholder, type = 'text', isTextArea = false, error
+}: {
+  label: string; value: string; onChange: (v: string) => void;
+  placeholder?: string; type?: string; isTextArea?: boolean; error?: string;
+}) => (
+  <div className="flex flex-col gap-1">
+    <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">{label}</label>
+    {isTextArea ? (
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        rows={3}
+        className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 resize-none ${error ? 'border-red-500/70' : 'border-slate-600/50'}`}
+      />
+    ) : (
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${error ? 'border-red-500/70' : 'border-slate-600/50'}`}
+      />
+    )}
+    {error && <span className="text-[10px] text-red-400">{error}</span>}
+  </div>
+);
+
+// ─── Small Action Button ─────────────────────────────────────────────────────
+const ActionBtn = ({ onClick, children, color = 'indigo' }: { onClick: () => void; children: React.ReactNode; color?: string }) => (
+  <button
+    onClick={onClick}
+    type="button"
+    className={`text-[10px] font-semibold px-2 py-1 rounded-md transition-all ${color === 'emerald'
+      ? 'bg-emerald-700/40 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-600/30'
+      : 'bg-indigo-700/40 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-600/30'
+      }`}
+  >
+    {children}
+  </button>
+);
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+export default function CardGeneratorPage() {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const [data, setData] = useState<CardData>({
+    nameLocal: 'ભંડેરી બાબુભાઈ નારણભાઈ',
+    nameEnglish: 'Bhanderi Babubhai Naranbhai',
+    dob: '01/01/1965',
+    gender: 'MALE',
+    genderLocal: 'પુરુષ',
+    idNumber: '904909189137',
+    issueDate: '28/02/2015',
+    addressLocal: 'નો પુત્ર: નારણભાઈ, વેળાવદર, વેળાવદર, વેળાવદર, ભાવનગર,\nગુજરાત - 364505',
+    addressEnglish: 'S/O: Naranbhai, Velavdar, Velavadar, PO: Velavadar,\nDIST: Bhavnagar,\nGujarat - 364505',
+    vid: '9110500614285534',
+    updateDate: '14/11/2025',
+  });
+
+  const previewRef = useRef<HTMLDivElement>(null);
+  const set = (k: keyof CardData) => (v: string) => setData((d) => ({ ...d, [k]: v }));
+
+  // ─── Gender handler ─
+  const handleGenderChange = (gen: string) => {
+    setData((d) => ({ ...d, gender: gen, genderLocal: GENDER_MAP[gen] || gen }));
+  };
+
+  // ─── ID auto-format (store raw, display formatted) ─
+  const handleIdChange = (raw: string) => {
+    const digits = raw.replace(/\D/g, '').slice(0, 12);
+    setData((d) => ({ ...d, idNumber: digits }));
+  };
+
+  // ─── VID auto-format ─
+  const handleVidChange = (raw: string) => {
+    const digits = raw.replace(/\D/g, '').slice(0, 16);
+    setData((d) => ({ ...d, vid: digits }));
+  };
+
+  // ─── Random ID ─
+  const generateId = () => setData((d) => ({ ...d, idNumber: rand12() }));
+  const generateVid = () => setData((d) => ({ ...d, vid: rand16() }));
+
+  // ─── Random Person ─
+  const fillRandomPerson = () => {
+    const p = generateRandomPerson();
+    setData(p);
+    setPhoto(null);
+  };
+
+  // ─── AI Generate via OpenAI ─
+  const generateFromAI = async () => {
+    setAiLoading(true);
+    try {
+      const res = await fetch('/api/generate', { method: 'POST' });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(`AI Error: ${err.error || res.statusText}`);
+        return;
+      }
+      const ai = await res.json();
+      setData((d) => ({
+        ...d,
+        nameLocal: ai.name_gujarati || d.nameLocal,
+        nameEnglish: ai.name_english || d.nameEnglish,
+        dob: ai.date_of_birth || d.dob,
+        gender: (ai.gender_english || 'Male').toUpperCase(),
+        genderLocal: ai.gender_gujarati || GENDER_MAP[(ai.gender_english || 'Male').toUpperCase()] || d.genderLocal,
+        idNumber: (ai.id_number || '').replace(/\D/g, '').slice(0, 12) || d.idNumber,
+        issueDate: ai.issue_date || d.issueDate,
+        addressLocal: formatAddress(ai.address_gujarati || '') || d.addressLocal,
+        addressEnglish: formatAddress(ai.address_english || '') || d.addressEnglish,
+        vid: rand16(),
+        updateDate: d.updateDate,
+      }));
+      setPhoto(null);
+    } catch (e) {
+      alert(`AI Error: ${e instanceof Error ? e.message : 'Network error'}`);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  // ─── Date Pickers ─
+  const handleDobPick = (iso: string) => set('dob')(dateToDDMMYYYY(iso));
+  const handleIssueDatePick = (iso: string) => set('issueDate')(dateToDDMMYYYY(iso));
+  const handleUpdateDatePick = (iso: string) => set('updateDate')(dateToDDMMYYYY(iso));
+
+  // ─── Validation ─
+  const dobError = isFutureDate(data.dob) ? 'DOB cannot be a future date' : '';
+  const idError = data.idNumber.replace(/\D/g, '').length > 0 && data.idNumber.replace(/\D/g, '').length !== 12 ? 'Must be exactly 12 digits' : '';
+  const nameEnError = data.nameEnglish.length > 0 && data.nameEnglish.length < 3 ? 'Minimum 3 characters' : '';
+  const nameGuError = data.nameLocal.length > 0 && data.nameLocal.length < 3 ? 'Minimum 3 characters' : '';
+
+  const onDrop = useCallback((accepted: File[]) => {
+    const file = accepted[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Auto-crop to portrait ratio (3:4)
+        const canvas = document.createElement('canvas');
+        const targetW = 300, targetH = 400;
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d')!;
+        const srcRatio = img.width / img.height;
+        const tgtRatio = targetW / targetH;
+        let sx = 0, sy = 0, sw = img.width, sh = img.height;
+        if (srcRatio > tgtRatio) {
+          sw = img.height * tgtRatio;
+          sx = (img.width - sw) / 2;
+        } else {
+          sh = img.width / tgtRatio;
+          sy = (img.height - sh) / 2;
+        }
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+        setPhoto(canvas.toDataURL('image/jpeg', 0.9));
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop, accept: { 'image/*': [] }, maxFiles: 1,
+  });
+
+  const handlePrint = () => {
+    const frontEl = document.getElementById('aadhaar-front');
+    const backEl = document.getElementById('aadhaar-back');
+    if (!frontEl || !backEl) return;
+
+    const printWin = window.open('', '_blank', 'width=500,height=400');
+    if (!printWin) return;
+
+    printWin.document.write(`<!DOCTYPE html>
+<html><head><title>Aadhaar Card PDF</title>
+<style>
+  @page { size: 119mm 77mm; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; }
+  .card-page {
+    width: 119mm;
+    height: 77mm;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+  .card-page:last-child { page-break-after: auto; }
+</style>
+</head><body>
+  <div class="card-page">${frontEl.outerHTML}</div>
+  <div class="card-page">${backEl.outerHTML}</div>
+</body></html>`);
+
+    printWin.document.close();
+    setTimeout(() => {
+      printWin.print();
+      printWin.close();
+    }, 500);
+  };
+
+  return (
+    <main className="min-h-screen bg-slate-900 text-white" suppressHydrationWarning>
+
+      {/* ─── Sticky Header ─── */}
+      <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-sm font-bold">KINGPARTH</h1>
+              <p className="text-[10px] text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={generateFromAI}
+              disabled={aiLoading}
+              className="bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {aiLoading ? (
+                <>
+                  <span className="inline-block w-3 h-3 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                '🤖 AI Generate'
+              )}
+            </button>
+            <button
+              onClick={handlePrint}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
+            >
+              Save / Print PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-8">
+        {/* ─── Left: Smart Form ─── */}
+        <div className="flex flex-col gap-5">
+
+          {/* ── Photo Upload ── */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+              <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
+              Upload Portrait Photo
+              <span className="text-[9px] text-slate-500 font-normal ml-auto">Auto-crops to 3:4 portrait</span>
+            </h2>
+            <div
+              {...getRootProps()}
+              className={`border-2 border-dashed rounded-xl min-h-[80px] flex items-center justify-center gap-3 cursor-pointer transition-all p-4
+                ${isDragActive ? 'border-indigo-400 bg-indigo-900/20' : 'border-slate-600 hover:border-indigo-600 bg-slate-900/50'}`}
+            >
+              <input {...getInputProps()} />
+              {photo ? (
+                <div className="flex items-center gap-4">
+                  <img src={photo} alt="Preview" className="h-24 w-[72px] object-cover rounded-lg border border-slate-500 shadow-lg" />
+                  <div>
+                    <p className="text-xs text-white font-medium">Photo uploaded ✓</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Click or drop to replace</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-2">
+                  <p className="text-sm text-slate-400">📷</p>
+                  <p className="text-xs text-slate-400 mt-1">Drag & drop or click to upload portrait</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">JPG, PNG — auto-cropped to passport ratio</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Front Card Details ── */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+            <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
+              Front Card Details
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Names */}
+              <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} error={nameGuError} />
+              <Field label="Name (English)" value={data.nameEnglish} onChange={set('nameEnglish')} error={nameEnError} />
+
+              {/* DOB — Date Picker */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={data.dob}
+                    onChange={(e) => set('dob')(e.target.value)}
+                    placeholder="DD/MM/YYYY"
+                    className={`flex-1 bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                  />
+                  <input
+                    type="date"
+                    value={ddmmyyyyToISO(data.dob)}
+                    onChange={(e) => handleDobPick(e.target.value)}
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500 w-10 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                  />
+                </div>
+                {dobError && <span className="text-[10px] text-red-400">{dobError}</span>}
+              </div>
+
+              {/* Gender — Dropdown */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Gender</label>
+                <select
+                  value={data.gender}
+                  onChange={(e) => handleGenderChange(e.target.value)}
+                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                >
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+
+              {/* Gender Gujarati — Auto-filled, read-only */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Gender (Gujarati) <span className="text-emerald-400 text-[9px] font-normal">Auto</span></label>
+                <input
+                  type="text"
+                  value={data.genderLocal}
+                  readOnly
+                  className="bg-slate-800/70 border border-emerald-700/30 text-emerald-200 text-sm rounded-lg px-3 py-2 focus:outline-none cursor-default"
+                />
+              </div>
+
+              {/* ID Number with Generate button */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
+                  <ActionBtn onClick={generateId}>🎲 Generate</ActionBtn>
+                </div>
+                <input
+                  type="text"
+                  value={fmt12(data.idNumber)}
+                  onChange={(e) => handleIdChange(e.target.value)}
+                  placeholder="XXXX XXXX XXXX"
+                  className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                />
+                {idError && <span className="text-[10px] text-red-400">{idError}</span>}
+              </div>
+
+              {/* Issue Date — Date Picker */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={data.issueDate}
+                    onChange={(e) => set('issueDate')(e.target.value)}
+                    placeholder="DD/MM/YYYY"
+                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                  />
+                  <input
+                    type="date"
+                    value={ddmmyyyyToISO(data.issueDate)}
+                    onChange={(e) => handleIssueDatePick(e.target.value)}
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500 w-10 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Back Card Details ── */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+            <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
+              Back Card Details
+            </h2>
+            <div className="grid grid-cols-1 gap-3">
+              <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
+              <Field label="Address (English)" value={data.addressEnglish} onChange={set('addressEnglish')} isTextArea />
+
+              {/* VID with Generate */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
+                  <ActionBtn onClick={generateVid}>🎲 Generate</ActionBtn>
+                </div>
+                <input
+                  type="text"
+                  value={fmt16(data.vid)}
+                  onChange={(e) => handleVidChange(e.target.value)}
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
+                />
+              </div>
+
+              {/* Update Date — Date Picker */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={data.updateDate}
+                    onChange={(e) => set('updateDate')(e.target.value)}
+                    placeholder="DD/MM/YYYY"
+                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                  />
+                  <input
+                    type="date"
+                    value={ddmmyyyyToISO(data.updateDate)}
+                    onChange={(e) => handleUpdateDatePick(e.target.value)}
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500 w-10 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Right: Live Preview (unchanged) ─── */}
+        <div className="flex flex-col gap-5 items-center xl:items-start xl:sticky xl:top-20 xl:self-start">
+          <div className="flex items-center gap-2 self-start">
+            <h2 className="text-sm font-bold text-white">Live Preview</h2>
+            <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
+          </div>
+
+          <div id="card-preview" ref={previewRef} className="flex flex-col gap-4 bg-white/5 p-4 rounded-xl border border-slate-700">
+            <div>
+              <p className="text-[10px] text-slate-400 mb-1.5 ml-1 uppercase tracking-widest font-semibold">— Front</p>
+              <div id="aadhaar-front"><FrontCard data={data} photoSrc={photo} /></div>
+            </div>
+            <div>
+              <p className="text-[10px] text-slate-400 mb-1.5 ml-1 uppercase tracking-widest font-semibold">— Back</p>
+              <div id="aadhaar-back"><BackCard data={data} /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
