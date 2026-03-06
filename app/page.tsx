@@ -305,15 +305,11 @@ const Field = ({
   </div>
 );
 
-// ─── Small Action Button ─────────────────────────────────────────────────────
-const ActionBtn = ({ onClick, children, color = 'indigo' }: { onClick: () => void; children: React.ReactNode; color?: string }) => (
+// ─── Action Button ────────────────────────────────────────────────────────────
+const ActionBtn = ({ onClick, children, className = '' }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
   <button
     onClick={onClick}
-    type="button"
-    className={`text-[10px] font-semibold px-2 py-1 rounded-md transition-all ${color === 'emerald'
-      ? 'bg-emerald-700/40 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-600/30'
-      : 'bg-indigo-700/40 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-600/30'
-      }`}
+    className={`bg-slate-700/50 hover:bg-slate-600/70 text-indigo-300 hover:text-indigo-200 text-[10px] font-semibold px-2 py-1 rounded transition-colors flex justify-center items-center ${className}`}
   >
     {children}
   </button>
@@ -485,19 +481,21 @@ export default function CardGeneratorPage() {
 
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-sm sm:text-base font-bold">KINGPARTH</h1>
-              <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center justify-between w-full sm:w-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-sm sm:text-base font-bold">KINGPARTH</h1>
+                <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={generateFromAI}
               disabled={aiLoading}
@@ -524,7 +522,7 @@ export default function CardGeneratorPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative">
         {/* ─── Left/Top: Top Content on Mobile (Upload + Preview) ─── */}
-        <div className="flex flex-col gap-5 sm:gap-8 order-1 xl:order-none">
+        <div className="flex flex-col gap-6 sm:gap-8 order-1 xl:order-none">
 
           {/* ── Photo Upload ── */}
           <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6">
@@ -535,7 +533,7 @@ export default function CardGeneratorPage() {
             </h2>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl h-36 md:h-44 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
+              className={`border-2 border-dashed rounded-xl h-32 sm:h-40 md:h-52 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
                 ${isDragActive ? 'border-indigo-400 bg-indigo-900/20' : 'border-slate-600 hover:border-indigo-600 bg-slate-900/50'}`}
             >
               <input {...getInputProps()} />
@@ -564,8 +562,8 @@ export default function CardGeneratorPage() {
               <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
             </div>
 
-            <div className="flex justify-center w-full overflow-hidden bg-white/5 py-6 rounded-xl border border-slate-700">
-              <div className="origin-top scale-[0.70] sm:scale-90 md:scale-100 flex flex-col gap-6" style={{ height: 'fit-content' }}>
+            <div className="flex justify-center w-full overflow-hidden bg-white/5 py-4 pb-4 rounded-xl border border-slate-700">
+              <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col space-y-6" style={{ height: 'fit-content' }}>
                 <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden" id="aadhaar-front-mobile">
                   <FrontCard data={data} photoSrc={photo} />
                 </div>
@@ -635,17 +633,17 @@ export default function CardGeneratorPage() {
 
               {/* ID Number with Generate button */}
               <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
-                  <ActionBtn onClick={generateId}>🎲 Generate</ActionBtn>
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
+                <div className="grid grid-cols-[1fr_auto] gap-2">
+                  <input
+                    type="text"
+                    value={fmt12(data.idNumber)}
+                    onChange={(e) => handleIdChange(e.target.value)}
+                    placeholder="XXXX XXXX XXXX"
+                    className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                  />
+                  <ActionBtn onClick={generateId} className="min-h-[44px]">🎲 Generate</ActionBtn>
                 </div>
-                <input
-                  type="text"
-                  value={fmt12(data.idNumber)}
-                  onChange={(e) => handleIdChange(e.target.value)}
-                  placeholder="XXXX XXXX XXXX"
-                  className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
-                />
                 {idError && <span className="text-[10px] text-red-400">{idError}</span>}
               </div>
 
@@ -683,17 +681,17 @@ export default function CardGeneratorPage() {
 
               {/* VID with Generate */}
               <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
-                  <ActionBtn onClick={generateVid}>🎲 Generate</ActionBtn>
+                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
+                <div className="grid grid-cols-[1fr_auto] gap-2">
+                  <input
+                    type="text"
+                    value={fmt16(data.vid)}
+                    onChange={(e) => handleVidChange(e.target.value)}
+                    placeholder="XXXX XXXX XXXX XXXX"
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
+                  />
+                  <ActionBtn onClick={generateVid} className="min-h-[44px]">🎲 Generate</ActionBtn>
                 </div>
-                <input
-                  type="text"
-                  value={fmt16(data.vid)}
-                  onChange={(e) => handleVidChange(e.target.value)}
-                  placeholder="XXXX XXXX XXXX XXXX"
-                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
-                />
               </div>
 
               {/* Update Date — Date Picker */}
