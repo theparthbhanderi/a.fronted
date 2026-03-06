@@ -126,6 +126,63 @@ export async function POST() {
     const genderEn = isMale ? 'Male' : 'Female';
     const genderGu = isMale ? 'પુરુષ' : 'સ્ત્રી';
 
+    // ── Pre-pick address components ──
+    const SOCIETIES: [string, string][] = [
+        ['Shanti Nagar Society', 'શાંતિ નગર સોસાયટી'],
+        ['Sardar Patel Society', 'સરદાર પટેલ સોસાયટી'],
+        ['Narmada Society', 'નર્મદા સોસાયટી'],
+        ['Swaminarayan Society', 'સ્વામિનારાયણ સોસાયટી'],
+        ['Krishna Nagar Society', 'કૃષ્ણ નગર સોસાયટી'],
+        ['Gokul Dham Society', 'ગોકુલ ધામ સોસાયટી'],
+        ['Akshar Dham Society', 'અક્ષર ધામ સોસાયટી'],
+        ['Mangal Murti Society', 'મંગલ મૂર્તિ સોસાયટી'],
+        ['Jay Ambe Society', 'જય અંબે સોસાયટી'],
+        ['Tulsi Society', 'તુલસી સોસાયટી'],
+        ['Radha Krishna Society', 'રાધા કૃષ્ણ સોસાયટી'],
+        ['Punit Nagar Society', 'પુનિત નગર સોસાયટી'],
+        ['Aashirwad Society', 'આશીર્વાદ સોસાયટી'],
+        ['Vrundavan Society', 'વૃંદાવન સોસાયટી'],
+        ['Madhav Society', 'માધવ સોસાયટી'],
+        ['Omkar Society', 'ઓમકાર સોસાયટી'],
+        ['New India Society', 'ન્યૂ ઈન્ડિયા સોસાયટી'],
+        ['Rajhans Society', 'રાજહંસ સોસાયટી'],
+        ['Narayan Society', 'નારાયણ સોસાયટી'],
+        ['Anand Society', 'આનંદ સોસાયટી'],
+    ];
+    const ROADS: [string, string][] = [
+        ['Main Road', 'મેઈન રોડ'], ['Station Road', 'સ્ટેશન રોડ'],
+        ['Highway Road', 'હાઈવે રોડ'], ['Ring Road', 'રીંગ રોડ'],
+        ['College Road', 'કોલેજ રોડ'], ['Market Road', 'માર્કેટ રોડ'],
+        ['Gandhi Road', 'ગાંધી રોડ'], ['Nehru Road', 'નહેરુ રોડ'],
+    ];
+    const AREAS: [string, string][] = [
+        ['Maninagar', 'મણિનગર'], ['Navrangpura', 'નવરંગપુરા'],
+        ['Satellite', 'સેટેલાઇટ'], ['Vastrapur', 'વસ્ત્રાપુર'],
+        ['Bopal', 'બોપલ'], ['Gota', 'ગોતા'], ['Chandkheda', 'ચાંદખેડા'],
+        ['Naroda', 'નરોડા'], ['Nikol', 'નિકોળ'], ['Vastral', 'વાસ્ત્રાલ'],
+        ['Ranip', 'રાણીપ'], ['Thaltej', 'થલતેજ'], ['Paldi', 'પાલડી'],
+        ['Shahibaug', 'શાહીબાગ'], ['Sabarmati', 'સાબરમતી'],
+        ['Adajan', 'અડાજણ'], ['Vesu', 'વેસુ'], ['Katargam', 'કાતરગામ'],
+        ['Alkapuri', 'અલકાપુરી'], ['Manjalpur', 'માંજલપુર'],
+    ];
+    const CITIES: [string, string][] = [
+        ['Ahmedabad', 'અમદાવાદ'], ['Surat', 'સુરત'], ['Vadodara', 'વડોદરા'],
+        ['Rajkot', 'રાજકોટ'], ['Bhavnagar', 'ભાવનગર'], ['Gandhinagar', 'ગાંધીનગર'],
+        ['Jamnagar', 'જામનગર'], ['Junagadh', 'જૂનાગઢ'], ['Anand', 'આણંદ'],
+        ['Nadiad', 'નડિયાદ'], ['Mehsana', 'મહેસાણા'], ['Navsari', 'નવસારી'],
+    ];
+
+    const society = pick(SOCIETIES);
+    const road = pick(ROADS);
+    const area = pick(AREAS);
+    const city = pick(CITIES);
+    const houseNo = Math.floor(Math.random() * 200) + 1;
+    const pin = String(360001 + Math.floor(Math.random() * 40000));
+
+    // Pre-build both addresses server-side for consistency
+    const addrGu = `ઘર નં ${houseNo}, ${society[1]}\n${area[1]}, ${road[1]}\n${city[1]}, ગુજરાત - ${pin}`;
+    const addrEn = `House No. ${houseNo}, ${society[0]}\n${area[0]}, ${road[0]}\n${city[0]}, Gujarat - ${pin}`;
+
     try {
         const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
@@ -133,7 +190,7 @@ export async function POST() {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + apiKey,
                 'HTTP-Referer': 'http://localhost:3001',
-                'X-Title': 'Aadhaar Format UI Generator',
+                'X-Title': 'KINGPARTH',
             },
             body: JSON.stringify({
                 model: 'openai/gpt-4o-mini',
@@ -146,8 +203,11 @@ name_english: "${nameEn}"
 name_gujarati: "${nameGu}"
 gender_english: "${genderEn}"
 gender_gujarati: "${genderGu}"
+address_gujarati: "${addrGu.replace(/\n/g, '\\n')}"
+address_english: "${addrEn.replace(/\n/g, '\\n')}"
 
-Generate: date_of_birth (DD/MM/YYYY, 1980-2005), issue_date (DD/MM/YYYY, 2012-2024), id_number (12 random digits), address_gujarati (100% Gujarati script, ZERO English letters), address_english.
+Generate: date_of_birth (DD/MM/YYYY, 1980-2005), issue_date (DD/MM/YYYY, 2012-2024), id_number (12 random digits).
+Use the EXACT address values given above. Do NOT modify them.
 Return ONLY JSON.`,
                     },
                 ],
@@ -177,11 +237,13 @@ Return ONLY JSON.`,
 
         const data = JSON.parse(cleaned);
 
-        // Force server-picked names (override anything AI changed)
+        // Force server-picked values (override anything AI changed)
         data.name_english = nameEn;
         data.name_gujarati = nameGu;
         data.gender_english = genderEn;
         data.gender_gujarati = genderGu;
+        data.address_gujarati = addrGu;
+        data.address_english = addrEn;
 
         return NextResponse.json(data);
     } catch (error: unknown) {
