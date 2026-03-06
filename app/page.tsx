@@ -282,14 +282,14 @@ const Field = ({
   label: string; value: string; onChange: (v: string) => void;
   placeholder?: string; type?: string; isTextArea?: boolean; error?: string;
 }) => (
-  <div className="flex flex-col gap-1.5">
+  <div className="flex flex-col space-y-2">
     <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">{label}</label>
     {isTextArea ? (
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[110px] resize-y focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+        className="bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[90px] resize-y focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
       />
     ) : (
       <>
@@ -496,11 +496,11 @@ export default function CardGeneratorPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <div className="flex flex-col gap-3 w-full sm:w-auto mt-3 sm:mt-0">
             <button
               onClick={generateFromAI}
               disabled={aiLoading}
-              className="flex-1 sm:flex-none justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="w-full justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
             >
               {aiLoading ? (
                 <>
@@ -513,7 +513,7 @@ export default function CardGeneratorPage() {
             </button>
             <button
               onClick={handlePrint}
-              className="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 print:hidden w-full sm:w-auto"
+              className="w-full justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 print:hidden sm:w-auto"
             >
               Save / Print PDF
             </button>
@@ -523,10 +523,10 @@ export default function CardGeneratorPage() {
 
       <div className="max-w-md xl:max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative space-y-6 xl:space-y-0">
         {/* ─── Left/Top: Top Content on Mobile (Upload + Preview) ─── */}
-        <div className="flex flex-col gap-6 sm:gap-8 order-1 xl:order-none">
+        <div className="flex flex-col space-y-6 sm:space-y-8 order-1 xl:order-none mt-6 xl:mt-0">
 
           {/* ── Photo Upload ── */}
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 mt-6">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
               Upload Portrait Photo
@@ -557,14 +557,14 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Mobile Live Preview Container (Only visible below XL, inserted between steps 1 and 2) ── */}
-          <div className="xl:hidden w-full px-2 sm:px-0 mt-2 mb-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="xl:hidden w-full px-1 mt-6">
+            <div className="flex items-center justify-between mb-3 px-2">
               <h2 className="text-sm font-bold text-white">Live Preview</h2>
               <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
             </div>
 
             <div className="flex flex-col items-center w-full">
-              <div className="origin-top scale-[0.92] sm:scale-[0.97] md:scale-100 flex flex-col items-center gap-6">
+              <div className="origin-top scale-[0.94] sm:scale-[0.98] md:scale-100 flex flex-col items-center gap-6 px-2">
                 <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-xl overflow-hidden flex justify-center bg-white" id="aadhaar-front-mobile">
                   <FrontCard data={data} photoSrc={photo} />
                 </div>
@@ -576,8 +576,8 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Front Card Details ── */}
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-6">
-            <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4 mt-6">
+            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
               Front Card Details
             </h2>
@@ -587,9 +587,9 @@ export default function CardGeneratorPage() {
               <Field label="Name (English)" value={data.nameEnglish} onChange={set('nameEnglish')} error={nameEnError} />
 
               {/* DOB — Date Picker */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
-                <div className="grid grid-cols-[1fr_70px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_90px] gap-2 items-center">
                   <input
                     type="text"
                     value={data.dob}
@@ -608,7 +608,7 @@ export default function CardGeneratorPage() {
               </div>
 
               {/* Gender — Dropdown */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Gender</label>
                 <select
                   value={data.gender}
@@ -622,7 +622,7 @@ export default function CardGeneratorPage() {
               </div>
 
               {/* Gender Gujarati — Auto-filled, read-only */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Gender (Gujarati) <span className="text-emerald-400 text-[10px] font-normal">Auto</span></label>
                 <input
                   type="text"
@@ -633,7 +633,7 @@ export default function CardGeneratorPage() {
               </div>
 
               {/* ID Number with Generate button */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                   <input
@@ -649,9 +649,9 @@ export default function CardGeneratorPage() {
               </div>
 
               {/* Issue Date — Date Picker */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
-                <div className="grid grid-cols-[1fr_70px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_90px] gap-2 items-center">
                   <input
                     type="text"
                     value={data.issueDate}
@@ -671,8 +671,8 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Back Card Details ── */}
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-6">
-            <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4 mt-6">
+            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
               Back Card Details
             </h2>
@@ -681,7 +681,7 @@ export default function CardGeneratorPage() {
               <Field label="Address (English)" value={data.addressEnglish} onChange={set('addressEnglish')} isTextArea />
 
               {/* VID with Generate */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                   <input
@@ -696,9 +696,9 @@ export default function CardGeneratorPage() {
               </div>
 
               {/* Update Date — Date Picker */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
-                <div className="grid grid-cols-[1fr_70px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_90px] gap-2 items-center">
                   <input
                     type="text"
                     value={data.updateDate}
