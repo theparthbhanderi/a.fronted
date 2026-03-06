@@ -282,26 +282,27 @@ const Field = ({
   label: string; value: string; onChange: (v: string) => void;
   placeholder?: string; type?: string; isTextArea?: boolean; error?: string;
 }) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">{label}</label>
+  <div className="flex flex-col gap-1.5">
+    <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">{label}</label>
     {isTextArea ? (
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        rows={3}
-        className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 resize-none ${error ? 'border-red-500/70' : 'border-slate-600/50'}`}
+        className="bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[110px] resize-y focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
       />
     ) : (
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${error ? 'border-red-500/70' : 'border-slate-600/50'}`}
-      />
+      <>
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={`bg-slate-800/70 border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${error ? 'border-red-500/70' : 'border-slate-600/50'}`}
+        />
+        {error && <span className="text-xs text-red-400">{error}</span>}
+      </>
     )}
-    {error && <span className="text-[10px] text-red-400">{error}</span>}
   </div>
 );
 
@@ -549,7 +550,7 @@ export default function CardGeneratorPage() {
                 <div className="text-center py-2">
                   <p className="text-lg sm:text-2xl text-slate-400">📷</p>
                   <p className="text-xs sm:text-sm text-slate-400 mt-2">Drag & drop or click to upload</p>
-                  <p className="text-[10px] sm:text-xs text-slate-500 mt-1">JPG, PNG — auto-cropped</p>
+                  <p className="text-xs text-slate-500 mt-1">JPG, PNG — auto-cropped</p>
                 </div>
               )}
             </div>
@@ -559,12 +560,12 @@ export default function CardGeneratorPage() {
           <div className="xl:hidden flex flex-col items-center w-full my-2">
             <div className="flex items-center gap-2 self-start mb-4">
               <h2 className="text-sm font-bold text-white">Live Preview</h2>
-              <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
+              <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
             </div>
 
-            <div className="flex flex-col items-center justify-center w-full h-auto overflow-visible bg-white/5 pt-4 pb-4 rounded-xl border border-slate-700">
+            <div className="flex flex-col items-center justify-center w-full h-auto overflow-visible bg-white/5 pt-4 pb-3 rounded-xl border border-slate-700 px-2 sm:px-0">
               <div className="flex justify-center w-full">
-                <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col items-center gap-6">
+                <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col items-center space-y-5">
                   <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-front-mobile">
                     <FrontCard data={data} photoSrc={photo} />
                   </div>
@@ -589,32 +590,32 @@ export default function CardGeneratorPage() {
 
               {/* DOB — Date Picker */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
-                <div className="flex gap-2">
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
+                <div className="grid grid-cols-[1fr_70px] gap-2 items-center">
                   <input
                     type="text"
                     value={data.dob}
                     onChange={(e) => set('dob')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className={`flex-1 bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                    className={`w-full bg-slate-800/70 border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.dob)}
                     onChange={(e) => handleDobPick(e.target.value)}
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 w-12 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
-                {dobError && <span className="text-[10px] text-red-400">{dobError}</span>}
+                {dobError && <span className="text-xs text-red-400">{dobError}</span>}
               </div>
 
               {/* Gender — Dropdown */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Gender</label>
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Gender</label>
                 <select
                   value={data.gender}
                   onChange={(e) => handleGenderChange(e.target.value)}
-                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer"
                 >
                   <option value="MALE">Male</option>
                   <option value="FEMALE">Female</option>
@@ -624,47 +625,47 @@ export default function CardGeneratorPage() {
 
               {/* Gender Gujarati — Auto-filled, read-only */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Gender (Gujarati) <span className="text-emerald-400 text-[9px] font-normal">Auto</span></label>
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Gender (Gujarati) <span className="text-emerald-400 text-[10px] font-normal">Auto</span></label>
                 <input
                   type="text"
                   value={data.genderLocal}
                   readOnly
-                  className="bg-slate-800/70 border border-emerald-700/30 text-emerald-200 text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none cursor-default"
+                  className="bg-slate-800/70 border border-emerald-700/30 text-emerald-200 text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none cursor-default"
                 />
               </div>
 
               {/* ID Number with Generate button */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
-                <div className="grid grid-cols-[1fr_auto] gap-2">
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
+                <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={fmt12(data.idNumber)}
                     onChange={(e) => handleIdChange(e.target.value)}
                     placeholder="XXXX XXXX XXXX"
-                    className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                    className={`bg-slate-800/70 border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                   />
-                  <ActionBtn onClick={generateId} className="min-h-[44px] px-3 sm:px-4">🎲 Generate</ActionBtn>
+                  <ActionBtn onClick={generateId} className="min-h-[44px] px-3 sm:px-4 text-xs">🎲 Generate</ActionBtn>
                 </div>
-                {idError && <span className="text-[10px] text-red-400">{idError}</span>}
+                {idError && <span className="text-xs text-red-400">{idError}</span>}
               </div>
 
               {/* Issue Date — Date Picker */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
-                <div className="flex gap-2">
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
+                <div className="grid grid-cols-[1fr_70px] gap-2 items-center">
                   <input
                     type="text"
                     value={data.issueDate}
                     onChange={(e) => set('issueDate')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.issueDate)}
                     onChange={(e) => handleIssueDatePick(e.target.value)}
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 w-12 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
               </div>
@@ -672,7 +673,7 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Back Card Details ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-5">
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-6">
             <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
               Back Card Details
@@ -683,35 +684,35 @@ export default function CardGeneratorPage() {
 
               {/* VID with Generate */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
-                <div className="grid grid-cols-[1fr_auto] gap-2">
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
+                <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={fmt16(data.vid)}
                     onChange={(e) => handleVidChange(e.target.value)}
                     placeholder="XXXX XXXX XXXX XXXX"
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
                   />
-                  <ActionBtn onClick={generateVid} className="min-h-[44px]">🎲 Generate</ActionBtn>
+                  <ActionBtn onClick={generateVid} className="min-h-[44px] px-3 sm:px-4 text-xs">🎲 Generate</ActionBtn>
                 </div>
               </div>
 
               {/* Update Date — Date Picker */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
-                <div className="flex gap-2">
+                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
+                <div className="grid grid-cols-[1fr_70px] gap-2 items-center">
                   <input
                     type="text"
                     value={data.updateDate}
                     onChange={(e) => set('updateDate')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.updateDate)}
                     onChange={(e) => handleUpdateDatePick(e.target.value)}
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 w-12 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
               </div>
