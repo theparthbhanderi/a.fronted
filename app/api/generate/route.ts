@@ -245,6 +245,11 @@ Return ONLY JSON.`,
         data.address_gujarati = addrGu;
         data.address_english = addrEn;
 
+        // Generate truly random ID & VID server-side
+        const randDigits = (n: number) => Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join('');
+        data.id_number = randDigits(12);
+        data.vid = randDigits(16);
+
         return NextResponse.json(data);
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown error';
