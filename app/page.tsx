@@ -482,7 +482,7 @@ export default function CardGeneratorPage() {
 
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-md xl:max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
@@ -521,12 +521,12 @@ export default function CardGeneratorPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative">
+      <div className="max-w-md xl:max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative space-y-6 xl:space-y-0">
         {/* ─── Left/Top: Top Content on Mobile (Upload + Preview) ─── */}
         <div className="flex flex-col gap-6 sm:gap-8 order-1 xl:order-none">
 
           {/* ── Photo Upload ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
               Upload Portrait Photo
@@ -534,7 +534,7 @@ export default function CardGeneratorPage() {
             </h2>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl h-32 sm:h-40 md:h-48 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
+              className={`border-2 border-dashed rounded-xl h-32 sm:h-40 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
                 ${isDragActive ? 'border-indigo-400 bg-indigo-900/20' : 'border-slate-600 hover:border-indigo-600 bg-slate-900/50'}`}
             >
               <input {...getInputProps()} />
@@ -557,28 +557,26 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Mobile Live Preview Container (Only visible below XL, inserted between steps 1 and 2) ── */}
-          <div className="xl:hidden w-full px-2 sm:px-0">
-            <div className="flex flex-col bg-slate-900/40 rounded-2xl border border-slate-700 p-4 mt-2">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-bold text-white">Live Preview</h2>
-                <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
-              </div>
+          <div className="xl:hidden w-full px-2 sm:px-0 mt-3 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-bold text-white">Live Preview</h2>
+              <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
+            </div>
 
-              <div className="flex flex-col items-center w-full h-auto overflow-visible">
-                <div className="origin-top scale-[0.95] sm:scale-100 flex flex-col items-center gap-6">
-                  <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center bg-white" id="aadhaar-front-mobile">
-                    <FrontCard data={data} photoSrc={photo} />
-                  </div>
-                  <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center bg-white" id="aadhaar-back-mobile">
-                    <BackCard data={data} />
-                  </div>
+            <div className="flex flex-col items-center w-full h-auto overflow-visible mt-3">
+              <div className="origin-top scale-[0.92] sm:scale-100 flex flex-col items-center gap-6">
+                <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-xl overflow-hidden flex justify-center bg-white" id="aadhaar-front-mobile">
+                  <FrontCard data={data} photoSrc={photo} />
+                </div>
+                <div className="shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-xl overflow-hidden flex justify-center bg-white" id="aadhaar-back-mobile">
+                  <BackCard data={data} />
                 </div>
               </div>
             </div>
           </div>
 
           {/* ── Front Card Details ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-6">
             <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
               Front Card Details
@@ -673,7 +671,7 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Back Card Details ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-6">
             <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
               Back Card Details
