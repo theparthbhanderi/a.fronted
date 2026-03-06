@@ -236,16 +236,16 @@ export default function CardGeneratorPage() {
 
     // Default PDF Data - Exact Match
     const [data, setData] = useState<CardData>({
-        nameLocal: 'ભંડેરી બાબુભાઈ નારણભાઈ',
-        nameEnglish: 'Bhanderi Babubhai Naranbhai',
+        nameLocal: 'અમિત વાલજીભાઈ સોલંકી',
+        nameEnglish: 'Amit Valjibhai Solanki',
         dob: '01/01/1965',
         gender: 'MALE',
         genderLocal: 'પુરુષ',
         idNumber: '904909189137',
         issueDate: '28/02/2015',
         // Note: Newlines (\n) used to match exact word-wrap from PDF
-        addressLocal: 'નો પુત્ર: નારણભાઈ, વેળાવદર, વેળાવદર, વેળાવદર, ભાવનગર,\nગુજરાત - 364505',
-        addressEnglish: 'S/O: Naranbhai, Velavdar, Velavadar, PO: Velavadar,\nDIST: Bhavnagar,\nGujarat - 364505',
+        addressLocal: 'ઘર નં 72, નર્મદા સોસાયટી માંજલપુર મેઈન રોડ નવસારી, ગુજરાત - 385983',
+        addressEnglish: 'House No. 72, Narmada Society Manjalpur Main Road Navsari, Gujarat - 385983',
         vid: '9110500614285534',
         updateDate: '14/11/2025',
     });

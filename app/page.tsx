@@ -342,16 +342,16 @@ export default function CardGeneratorPage() {
   const [aiLoading, setAiLoading] = useState(false);
 
   const [data, setData] = useState<CardData>({
-    nameLocal: 'ભંડેરી બાબુભાઈ નારણભાઈ',
-    nameEnglish: 'Bhanderi Babubhai Naranbhai',
-    dob: '01/01/1965',
-    gender: 'MALE',
-    genderLocal: 'પુરુષ',
-    idNumber: '904909189137',
-    issueDate: '28/02/2015',
-    addressLocal: 'નો પુત્ર: નારણભાઈ, વેળાવદર, વેળાવદર, વેળાવદર, ભાવનગર,\nગુજરાત - 364505',
-    addressEnglish: 'S/O: Naranbhai, Velavdar, Velavadar, PO: Velavadar,\nDIST: Bhavnagar,\nGujarat - 364505',
-    vid: '9110500614285534',
+    nameLocal: 'ઊર્વી જયંતીભાઈ દેસાઈ',
+    nameEnglish: 'Urvi Jayantibhai Desai',
+    dob: '15/08/1990',
+    gender: 'FEMALE',
+    genderLocal: 'સ્ત્રી',
+    idNumber: '944742892749',
+    issueDate: '20/03/2018',
+    addressLocal: 'ઘર નં 124, નારાયણ સોસાયટી સેટેલાઇટ\nનહેરુ રોડ આણંદ, ગુજરાત - 365869',
+    addressEnglish: 'House No. 124, Narayan Society Satellite\nNehru Road Anand, Gujarat - 365869',
+    vid: '4408775126933962',
     updateDate: '14/11/2025',
   });
 
