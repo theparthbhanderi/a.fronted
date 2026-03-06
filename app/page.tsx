@@ -485,27 +485,27 @@ export default function CardGeneratorPage() {
 
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1" />
               </svg>
             </div>
             <div>
-              <h1 className="text-sm font-bold">KINGPARTH</h1>
-              <p className="text-[10px] text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
+              <h1 className="text-sm sm:text-base font-bold">KINGPARTH</h1>
+              <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
             <button
               onClick={generateFromAI}
               disabled={aiLoading}
-              className="bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 sm:flex-none justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {aiLoading ? (
                 <>
-                  <span className="inline-block w-3 h-3 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" />
+                  <span className="inline-block w-4 h-4 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" />
                   Generating...
                 </>
               ) : (
@@ -514,7 +514,7 @@ export default function CardGeneratorPage() {
             </button>
             <button
               onClick={handlePrint}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
+              className="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 print:hidden"
             >
               Save / Print PDF
             </button>
@@ -522,12 +522,12 @@ export default function CardGeneratorPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-8">
-        {/* ─── Left: Smart Form ─── */}
-        <div className="flex flex-col gap-5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative">
+        {/* ─── Left/Top: Top Content on Mobile (Upload + Preview) ─── */}
+        <div className="flex flex-col gap-5 sm:gap-8 order-1 xl:order-none">
 
           {/* ── Photo Upload ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
               Upload Portrait Photo
@@ -535,41 +535,60 @@ export default function CardGeneratorPage() {
             </h2>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl min-h-[80px] flex items-center justify-center gap-3 cursor-pointer transition-all p-4
+              className={`border-2 border-dashed rounded-xl h-36 md:h-44 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
                 ${isDragActive ? 'border-indigo-400 bg-indigo-900/20' : 'border-slate-600 hover:border-indigo-600 bg-slate-900/50'}`}
             >
               <input {...getInputProps()} />
               {photo ? (
-                <div className="flex items-center gap-4">
-                  <img src={photo} alt="Preview" className="h-24 w-[72px] object-cover rounded-lg border border-slate-500 shadow-lg" />
+                <div className="flex items-center gap-4 h-full">
+                  <img src={photo} alt="Preview" className="h-full w-auto aspect-[3/4] object-cover rounded-lg border border-slate-500 shadow-lg" />
                   <div>
-                    <p className="text-xs text-white font-medium">Photo uploaded ✓</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Click or drop to replace</p>
+                    <p className="text-xs sm:text-sm text-white font-medium">Photo uploaded ✓</p>
+                    <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5">Click or drop to replace</p>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-2">
-                  <p className="text-sm text-slate-400">📷</p>
-                  <p className="text-xs text-slate-400 mt-1">Drag & drop or click to upload portrait</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">JPG, PNG — auto-cropped to passport ratio</p>
+                  <p className="text-lg sm:text-2xl text-slate-400">📷</p>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2">Drag & drop or click to upload</p>
+                  <p className="text-[10px] sm:text-xs text-slate-500 mt-1">JPG, PNG — auto-cropped</p>
                 </div>
               )}
             </div>
           </div>
 
+          {/* ── Mobile Live Preview Container (Only visible below XL, inserted between steps 1 and 2) ── */}
+          <div className="xl:hidden flex flex-col items-center w-full my-2">
+            <div className="flex items-center gap-2 self-start mb-4">
+              <h2 className="text-sm font-bold text-white">Live Preview</h2>
+              <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
+            </div>
+
+            <div className="flex justify-center w-full overflow-hidden bg-white/5 py-6 rounded-xl border border-slate-700">
+              <div className="origin-top scale-[0.70] sm:scale-90 md:scale-100 flex flex-col gap-6" style={{ height: 'fit-content' }}>
+                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden" id="aadhaar-front-mobile">
+                  <FrontCard data={data} photoSrc={photo} />
+                </div>
+                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden" id="aadhaar-back-mobile">
+                  <BackCard data={data} />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* ── Front Card Details ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-5">
             <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
               Front Card Details
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Names */}
               <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} error={nameGuError} />
               <Field label="Name (English)" value={data.nameEnglish} onChange={set('nameEnglish')} error={nameEnError} />
 
               {/* DOB — Date Picker */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
                 <div className="flex gap-2">
                   <input
@@ -577,25 +596,25 @@ export default function CardGeneratorPage() {
                     value={data.dob}
                     onChange={(e) => set('dob')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className={`flex-1 bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                    className={`flex-1 bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.dob)}
                     onChange={(e) => handleDobPick(e.target.value)}
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500 w-10 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 w-12 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
                 {dobError && <span className="text-[10px] text-red-400">{dobError}</span>}
               </div>
 
               {/* Gender — Dropdown */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Gender</label>
                 <select
                   value={data.gender}
                   onChange={(e) => handleGenderChange(e.target.value)}
-                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer"
                 >
                   <option value="MALE">Male</option>
                   <option value="FEMALE">Female</option>
@@ -604,18 +623,18 @@ export default function CardGeneratorPage() {
               </div>
 
               {/* Gender Gujarati — Auto-filled, read-only */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Gender (Gujarati) <span className="text-emerald-400 text-[9px] font-normal">Auto</span></label>
                 <input
                   type="text"
                   value={data.genderLocal}
                   readOnly
-                  className="bg-slate-800/70 border border-emerald-700/30 text-emerald-200 text-sm rounded-lg px-3 py-2 focus:outline-none cursor-default"
+                  className="bg-slate-800/70 border border-emerald-700/30 text-emerald-200 text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none cursor-default"
                 />
               </div>
 
               {/* ID Number with Generate button */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">12-Digit ID Number</label>
                   <ActionBtn onClick={generateId}>🎲 Generate</ActionBtn>
@@ -625,13 +644,13 @@ export default function CardGeneratorPage() {
                   value={fmt12(data.idNumber)}
                   onChange={(e) => handleIdChange(e.target.value)}
                   placeholder="XXXX XXXX XXXX"
-                  className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                  className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                 />
                 {idError && <span className="text-[10px] text-red-400">{idError}</span>}
               </div>
 
               {/* Issue Date — Date Picker */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
                 <div className="flex gap-2">
                   <input
@@ -639,13 +658,13 @@ export default function CardGeneratorPage() {
                     value={data.issueDate}
                     onChange={(e) => set('issueDate')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.issueDate)}
                     onChange={(e) => handleIssueDatePick(e.target.value)}
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500 w-10 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 w-12 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
               </div>
@@ -653,17 +672,17 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Back Card Details ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-5">
             <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
               Back Card Details
             </h2>
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-4">
               <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
               <Field label="Address (English)" value={data.addressEnglish} onChange={set('addressEnglish')} isTextArea />
 
               {/* VID with Generate */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">16-Digit Virtual ID (VID)</label>
                   <ActionBtn onClick={generateVid}>🎲 Generate</ActionBtn>
@@ -673,12 +692,12 @@ export default function CardGeneratorPage() {
                   value={fmt16(data.vid)}
                   onChange={(e) => handleVidChange(e.target.value)}
                   placeholder="XXXX XXXX XXXX XXXX"
-                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
+                  className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider"
                 />
               </div>
 
               {/* Update Date — Date Picker */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
                 <div className="flex gap-2">
                   <input
@@ -686,13 +705,13 @@ export default function CardGeneratorPage() {
                     value={data.updateDate}
                     onChange={(e) => set('updateDate')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                    className="flex-1 bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.updateDate)}
                     onChange={(e) => handleUpdateDatePick(e.target.value)}
-                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500 w-10 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 w-12 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
                 </div>
               </div>
@@ -700,14 +719,14 @@ export default function CardGeneratorPage() {
           </div>
         </div>
 
-        {/* ─── Right: Live Preview (unchanged) ─── */}
-        <div className="flex flex-col gap-5 items-center xl:items-start xl:sticky xl:top-20 xl:self-start">
+        {/* ─── Right: Desktop Live Preview Container (Only visible on XL and above) ─── */}
+        <div className="hidden xl:flex flex-col gap-5 items-start sticky top-[100px] self-start z-10">
           <div className="flex items-center gap-2 self-start">
             <h2 className="text-sm font-bold text-white">Live Preview</h2>
             <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
           </div>
 
-          <div id="card-preview" ref={previewRef} className="flex flex-col gap-4 bg-white/5 p-4 rounded-xl border border-slate-700">
+          <div id="card-preview" ref={previewRef} className="flex flex-col gap-4 bg-white/5 p-4 rounded-xl border border-slate-700 shadow-2xl">
             <div>
               <p className="text-[10px] text-slate-400 mb-1.5 ml-1 uppercase tracking-widest font-semibold">— Front</p>
               <div id="aadhaar-front"><FrontCard data={data} photoSrc={photo} /></div>
