@@ -495,11 +495,11 @@ export default function CardGeneratorPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
             <button
               onClick={generateFromAI}
               disabled={aiLoading}
-              className="flex-1 sm:flex-none justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 sm:flex-none justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               {aiLoading ? (
                 <>
@@ -512,7 +512,7 @@ export default function CardGeneratorPage() {
             </button>
             <button
               onClick={handlePrint}
-              className="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 print:hidden"
+              className="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 print:hidden w-full sm:w-auto"
             >
               Save / Print PDF
             </button>
@@ -533,7 +533,7 @@ export default function CardGeneratorPage() {
             </h2>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl h-32 sm:h-40 md:h-52 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
+              className={`border-2 border-dashed rounded-xl h-32 sm:h-40 md:h-48 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
                 ${isDragActive ? 'border-indigo-400 bg-indigo-900/20' : 'border-slate-600 hover:border-indigo-600 bg-slate-900/50'}`}
             >
               <input {...getInputProps()} />
@@ -562,12 +562,12 @@ export default function CardGeneratorPage() {
               <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
             </div>
 
-            <div className="flex justify-center w-full overflow-hidden bg-white/5 py-4 pb-4 rounded-xl border border-slate-700">
-              <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col space-y-6" style={{ height: 'fit-content' }}>
-                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden" id="aadhaar-front-mobile">
+            <div className="flex flex-col items-center justify-center w-full overflow-hidden bg-white/5 py-4 pb-4 rounded-xl border border-slate-700">
+              <div className="origin-top scale-[0.88] sm:scale-[0.95] md:scale-100 flex flex-col items-center justify-center space-y-6" style={{ height: 'fit-content' }}>
+                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-front-mobile">
                   <FrontCard data={data} photoSrc={photo} />
                 </div>
-                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden" id="aadhaar-back-mobile">
+                <div className="shadow-2xl ring-1 ring-slate-800/50 rounded-lg overflow-hidden flex justify-center w-full" id="aadhaar-back-mobile">
                   <BackCard data={data} />
                 </div>
               </div>
@@ -575,7 +575,7 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Front Card Details ── */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-5">
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 sm:p-6 space-y-6">
             <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
               Front Card Details
@@ -642,7 +642,7 @@ export default function CardGeneratorPage() {
                     placeholder="XXXX XXXX XXXX"
                     className={`bg-slate-800/70 border text-white text-sm rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 font-mono tracking-wider ${idError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                   />
-                  <ActionBtn onClick={generateId} className="min-h-[44px]">🎲 Generate</ActionBtn>
+                  <ActionBtn onClick={generateId} className="min-h-[44px] px-3 sm:px-4">🎲 Generate</ActionBtn>
                 </div>
                 {idError && <span className="text-[10px] text-red-400">{idError}</span>}
               </div>
