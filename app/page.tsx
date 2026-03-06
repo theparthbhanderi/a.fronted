@@ -482,7 +482,7 @@ export default function CardGeneratorPage() {
 
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-md xl:max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-[420px] xl:max-w-7xl mx-auto px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3">
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
@@ -521,12 +521,12 @@ export default function CardGeneratorPage() {
         </div>
       </div>
 
-      <div className="max-w-md xl:max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative space-y-6 xl:space-y-0">
+      <div className="max-w-[420px] xl:max-w-7xl mx-auto px-4 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative space-y-6 xl:space-y-0">
         {/* ─── Left/Top: Top Content on Mobile (Upload + Preview) ─── */}
-        <div className="flex flex-col space-y-6 sm:space-y-8 order-1 xl:order-none mt-6 xl:mt-0">
+        <div className="flex flex-col space-y-6 order-1 xl:order-none">
 
           {/* ── Photo Upload ── */}
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 mt-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
               Upload Portrait Photo
@@ -557,7 +557,7 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Mobile Live Preview Container (Only visible below XL, inserted between steps 1 and 2) ── */}
-          <div className="xl:hidden w-full px-1 mt-6">
+          <div className="xl:hidden w-full">
             <div className="flex items-center justify-between mb-3 px-2">
               <h2 className="text-sm font-bold text-white">Live Preview</h2>
               <span className="text-xs bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
@@ -576,7 +576,7 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Front Card Details ── */}
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4 mt-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
               Front Card Details
@@ -671,7 +671,7 @@ export default function CardGeneratorPage() {
           </div>
 
           {/* ── Back Card Details ── */}
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4 mt-6">
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4">
             <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
               <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
               Back Card Details
