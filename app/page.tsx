@@ -249,31 +249,6 @@ const randDate = (minY: number, maxY: number) => {
   return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
 };
 
-const generateRandomPerson = (): CardData & { _gender: string } => {
-  const gen = pick(['MALE', 'FEMALE']);
-  const fnI = Math.floor(Math.random() * FIRST_NAMES_EN.length);
-  const lnI = Math.floor(Math.random() * LAST_NAMES_EN.length);
-  const fatherI = Math.floor(Math.random() * FIRST_NAMES_EN.length);
-  const cityI = Math.floor(Math.random() * CITIES.length);
-  const villI = Math.floor(Math.random() * VILLAGES.length);
-  const pc = String(360001 + Math.floor(Math.random() * 40000));
-
-  return {
-    _gender: gen,
-    nameLocal: `${LAST_NAMES_GU[lnI]} ${FIRST_NAMES_GU[fnI]} ${FIRST_NAMES_GU[fatherI]}`,
-    nameEnglish: `${LAST_NAMES_EN[lnI]} ${FIRST_NAMES_EN[fnI]} ${FIRST_NAMES_EN[fatherI]}`,
-    dob: randDate(1950, 2000),
-    gender: gen,
-    genderLocal: GENDER_MAP[gen],
-    idNumber: rand12(),
-    issueDate: randDate(2010, 2024),
-    addressLocal: `નો ${gen === 'MALE' ? 'પુત્ર' : 'પુત્રી'}: ${FIRST_NAMES_GU[fatherI]}, ${VILLAGES_GU[villI]},\n${CITIES_GU[cityI]}, ગુજરાત - ${pc}`,
-    addressEnglish: `${gen === 'MALE' ? 'S/O' : 'D/O'}: ${FIRST_NAMES_EN[fatherI]}, ${VILLAGES[villI]},\nPO: ${VILLAGES[villI]}, DIST: ${CITIES[cityI]},\nGujarat - ${pc}`,
-    vid: rand16(),
-    updateDate: randDate(2023, 2026),
-  };
-};
-
 // ─── Validation ──────────────────────────────────────────────────────────────
 const isFutureDate = (dateStr: string) => {
   const parts = dateStr.split('/');
@@ -404,12 +379,7 @@ export default function CardGeneratorPage() {
   const generateId = () => setData((d) => ({ ...d, idNumber: rand12() }));
   const generateVid = () => setData((d) => ({ ...d, vid: rand16() }));
 
-  // ─── Random Person ─
-  const fillRandomPerson = () => {
-    const p = generateRandomPerson();
-    setData(p);
-    setPhoto(null);
-  };
+
 
   // ─── AI Generate via OpenAI ─
   const generateFromAI = async () => {
