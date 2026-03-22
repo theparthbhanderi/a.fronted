@@ -393,7 +393,7 @@ export default function CardGeneratorPage() {
             return;
           }
         } else if (res.status === 429) {
-          alert(`AI is busy: Too many requests. Please wait 5-10 seconds and try again.`);
+          alert(`AI is busy: Too many requests across all fallback models.\n\nPrimary Model: ${err.model_attempted || 'Unknown'}\nDetails: Please wait 10-20 seconds and try again.`);
         } else {
           alert(`AI Error: ${err.error || res.statusText}\n\nModel attempted: ${err.model_attempted || 'Unknown'}\nDetails: ${err.details || 'No additional details'}`);
         }
