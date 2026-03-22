@@ -54,9 +54,10 @@ export async function POST(req: Request) {
         'qwen/qwen3-next-80b-a3b-instruct:free',
         'meta-llama/llama-3.3-70b-instruct:free',
         'google/gemma-3-27b-it:free',
-        'nvidia/llama-3.1-nemotron-70b-instruct:free',
-        'mistralai/mistral-small-24b-instruct-2501:free',
-        'google/gemma-3-12b-it:free'
+        'nvidia/nemotron-3-super:free',
+        'google/gemma-3-12b-it:free',
+        'google/gemma-3-4b-it:free',
+        'openrouter/free'
     ];
 
     const maxRetries = models.length - 1; 
