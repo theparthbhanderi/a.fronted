@@ -47,25 +47,28 @@ export async function POST(req: Request) {
             { status: 500 }
         );
     }
-
-    const maxRetries = 2;
-    let lastError = '';
-    let lastStatus = 500;
     
     // Model fallback sequence from user's verified free list
     const models = [
         model, 
         'qwen/qwen3-next-80b-a3b-instruct:free',
         'meta-llama/llama-3.3-70b-instruct:free',
-        'google/gemma-3-27b-it:free'
+        'google/gemma-3-27b-it:free',
+        'nvidia/llama-3.1-nemotron-70b-instruct:free',
+        'mistralai/mistral-small-24b-instruct-2501:free',
+        'google/gemma-3-12b-it:free'
     ];
+
+    const maxRetries = models.length - 1; 
+    let lastError = '';
+    let lastStatus = 500;
 
     console.log(`[GENERATE] Starting request. Key Source: ${customKey ? 'Custom' : 'Pool'}. Target Model: ${model}`);
 
     for (let i = 0; i <= maxRetries; i++) {
-        const currentModel = models[i] || models[0];
+        const currentModel = models[i];
         try {
-            console.log(`[GENERATE] Attempt ${i + 1} using model: ${currentModel}`);
+            console.log(`[GENERATE] Attempt ${i + 1}/${models.length} using model: ${currentModel}`);
             const response = await fetch(baseUrl, {
                 method: 'POST',
                 headers: {
@@ -119,9 +122,8 @@ Return ONLY valid JSON.`,
             console.warn(`[GENERATE] Attempt ${i + 1} failed with status ${lastStatus}`);
 
             if (lastStatus === 429 && i < maxRetries) {
-                const delay = 1000 * (i + 1);
-                console.log(`[GENERATE] Rate limited. Retrying in ${delay}ms with fallback model if available...`);
-                await new Promise(resolve => setTimeout(resolve, delay));
+                // Short 500ms delay between fallback models to stay responsive
+                await new Promise(resolve => setTimeout(resolve, 500));
                 continue;
             }
 
