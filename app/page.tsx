@@ -373,7 +373,7 @@ export default function CardGeneratorPage() {
       if (!res.ok) {
         const err = await res.json();
         if (res.status === 402 && !useFreeModel) {
-          if (confirm(`${err.message}\n\nWould you like to try with a free model from AIML API?`)) {
+          if (confirm(`${err.message}\n\nWould you like to try with a free model from OpenRouter?`)) {
             generateFromAI(true);
             return;
           }
