@@ -373,7 +373,7 @@ export default function CardGeneratorPage() {
       if (!res.ok) {
         const err = await res.json();
         if (res.status === 402 && !useFreeModel) {
-          if (confirm(`${err.message}\n\nWould you like to try with a free model from OpenRouter?`)) {
+          if (confirm(`${err.message}\n\nWould you like to try with Qwen3 Next 80B on OpenRouter?`)) {
             generateFromAI(true);
             return;
           }

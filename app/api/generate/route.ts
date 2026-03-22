@@ -27,14 +27,15 @@ export async function POST(req: Request) {
     const { useFreeModel } = await req.json().catch(() => ({}));
     const isFree = useFreeModel === true;
     
-    // All models are now on OpenRouter
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    // Models and Keys configured as per user request
+    const isNext = isFree === true;
+    const apiKey = isNext ? process.env.OPENROUTER_API_KEY_NEXT : process.env.OPENROUTER_API_KEY_CODER;
     const baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    const model = isFree ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'google/gemini-2.0-flash-lite-preview-02-05:free';
+    const model = isNext ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'qwen/qwen3-coder-480b-a35b-instruct:free';
 
     if (!apiKey) {
         return NextResponse.json(
-            { error: 'OPENROUTER_API_KEY is not set in environment variables' },
+            { error: `${isNext ? 'OPENROUTER_API_KEY_NEXT' : 'OPENROUTER_API_KEY_CODER'} is not set in environment variables` },
             { status: 500 }
         );
     }
