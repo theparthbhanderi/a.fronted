@@ -395,7 +395,7 @@ export default function CardGeneratorPage() {
         } else if (res.status === 429) {
           alert(`AI is busy: Too many requests. Please wait 5-10 seconds and try again.`);
         } else {
-          alert(`AI Error: ${err.error || res.statusText}`);
+          alert(`AI Error: ${err.error || res.statusText}\n\nModel attempted: ${err.model_attempted || 'Unknown'}\nDetails: ${err.details || 'No additional details'}`);
         }
         return;
       }

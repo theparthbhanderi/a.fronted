@@ -52,11 +52,12 @@ export async function POST(req: Request) {
     let lastError = '';
     let lastStatus = 500;
     
-    // Model fallback sequence
+    // Model fallback sequence from user's verified free list
     const models = [
         model, 
-        'google/gemini-2.0-flash-lite:free',
-        'google/gemini-2.0-flash-lite'
+        'qwen/qwen3-next-80b-a3b-instruct:free',
+        'meta-llama/llama-3.3-70b-instruct:free',
+        'google/gemma-3-27b-it:free'
     ];
 
     console.log(`[GENERATE] Starting request. Key Source: ${customKey ? 'Custom' : 'Pool'}. Target Model: ${model}`);
@@ -70,7 +71,7 @@ export async function POST(req: Request) {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${apiKey}`,
-                    'HTTP-Referer': 'http://localhost:3000',
+                    'HTTP-Referer': 'https://parthstudio.in', // Better for OpenRouter metrics
                     'X-Title': 'Aadhaar Generator Pro',
                 },
                 body: JSON.stringify({
