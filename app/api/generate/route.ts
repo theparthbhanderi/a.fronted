@@ -27,14 +27,14 @@ export async function POST(req: Request) {
     const { useFreeModel } = await req.json().catch(() => ({}));
     const isFree = useFreeModel === true;
     
-    // Both models are now on OpenRouter/AIML, but we prioritize the user's requested Qwen 3 for "free" mode
-    const apiKey = isFree ? process.env.OPENROUTER_API_KEY : process.env.AIML_API_KEY;
-    const baseUrl = isFree ? 'https://openrouter.ai/api/v1/chat/completions' : 'https://api.aimlapi.com/v1/chat/completions';
-    const model = isFree ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'gemini-2.0-flash-lite';
+    // All models are now on OpenRouter
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    const baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    const model = isFree ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'google/gemini-2.0-flash-lite-preview-02-05:free';
 
     if (!apiKey) {
         return NextResponse.json(
-            { error: `${isFree ? 'OPENROUTER_API_KEY' : 'AIML_API_KEY'} is not set in environment variables` },
+            { error: 'OPENROUTER_API_KEY is not set in environment variables' },
             { status: 500 }
         );
     }
