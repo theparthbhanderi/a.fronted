@@ -51,9 +51,20 @@ export async function POST(req: Request) {
     const maxRetries = 2;
     let lastError = '';
     let lastStatus = 500;
+    
+    // Model fallback sequence
+    const models = [
+        model, 
+        'google/gemini-2.0-flash-lite:free',
+        'google/gemini-2.0-flash-lite'
+    ];
+
+    console.log(`[GENERATE] Starting request. Key Source: ${customKey ? 'Custom' : 'Pool'}. Target Model: ${model}`);
 
     for (let i = 0; i <= maxRetries; i++) {
+        const currentModel = models[i] || models[0];
         try {
+            console.log(`[GENERATE] Attempt ${i + 1} using model: ${currentModel}`);
             const response = await fetch(baseUrl, {
                 method: 'POST',
                 headers: {
@@ -63,7 +74,7 @@ export async function POST(req: Request) {
                     'X-Title': 'Aadhaar Generator Pro',
                 },
                 body: JSON.stringify({
-                    model: model,
+                    model: currentModel,
                     messages: [
                         { role: 'system', content: SYSTEM_PROMPT },
                         {
@@ -98,15 +109,18 @@ Return ONLY valid JSON.`,
                 }
                 data.vid = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join('');
 
+                console.log(`[GENERATE] Success on attempt ${i + 1} with model ${currentModel}`);
                 return NextResponse.json(data);
             }
 
             lastStatus = response.status;
             lastError = await response.text();
+            console.warn(`[GENERATE] Attempt ${i + 1} failed with status ${lastStatus}`);
 
             if (lastStatus === 429 && i < maxRetries) {
-                console.log(`Rate limited, retrying in ${1000 * (i + 1)}ms...`);
-                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                const delay = 1000 * (i + 1);
+                console.log(`[GENERATE] Rate limited. Retrying in ${delay}ms with fallback model if available...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
                 continue;
             }
 
@@ -121,15 +135,16 @@ Return ONLY valid JSON.`,
                 );
             }
 
+            // If we hit an error other than 429, or we're out of retries
             return NextResponse.json(
-                { error: `API error: ${lastStatus}`, details: lastError },
+                { error: `API error: ${lastStatus}`, details: lastError, model_attempted: currentModel },
                 { status: lastStatus }
             );
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Unknown error';
-            console.error(`Attempt ${i + 1} failed:`, message);
+            console.error(`[GENERATE] Attempt ${i + 1} exception:`, message);
             if (i === maxRetries) {
-                return NextResponse.json({ error: 'Failed to generate persona after retries.' }, { status: 500 });
+                return NextResponse.json({ error: 'Failed to generate persona after retries.', last_exception: message }, { status: 500 });
             }
             await new Promise(resolve => setTimeout(resolve, 1000));
         }

@@ -557,7 +557,7 @@ export default function CardGeneratorPage() {
                 <input
                   type="password"
                   value={customKey}
-                  onChange={(e) => handleSaveKey(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSaveKey(e.target.value)}
                   placeholder="sk-or-v1-..."
                   className="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded px-2 py-1.5 focus:outline-none focus:border-indigo-500"
                 />
