@@ -377,6 +377,8 @@ export default function CardGeneratorPage() {
             generateFromAI(true);
             return;
           }
+        } else if (res.status === 429) {
+          alert(`AI is busy: Too many requests. Please wait 5-10 seconds and try again.`);
         } else {
           alert(`AI Error: ${err.error || res.statusText}`);
         }

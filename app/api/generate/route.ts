@@ -40,37 +40,69 @@ export async function POST(req: Request) {
         );
     }
 
-    try {
-        const response = await fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-                'HTTP-Referer': 'http://localhost:3000',
-                'X-Title': 'Aadhaar Generator Pro',
-            },
-            body: JSON.stringify({
-                model: model,
-                messages: [
-                    { role: 'system', content: SYSTEM_PROMPT },
-                    {
-                        role: 'user',
-                        content: `Generate a completely unique and authentic Gujarati persona. 
+    const maxRetries = 2;
+    let lastError = '';
+    let lastStatus = 500;
+
+    for (let i = 0; i <= maxRetries; i++) {
+        try {
+            const response = await fetch(baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                    'HTTP-Referer': 'http://localhost:3000',
+                    'X-Title': 'Aadhaar Generator Pro',
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: 'system', content: SYSTEM_PROMPT },
+                        {
+                            role: 'user',
+                            content: `Generate a completely unique and authentic Gujarati persona. 
 Ensure the name and address are detailed and culturally accurate. 
 Do NOT repeat common names. Surprise me with 100% variety.
 Return ONLY valid JSON.`,
-                    },
-                ],
-                temperature: 1.0,
-                max_tokens: 500,
-            }),
-        });
+                        },
+                    ],
+                    temperature: 1.0,
+                    max_tokens: 500,
+                }),
+            });
 
-        if (!response.ok) {
-            const err = await response.text();
-            console.error('API error:', err);
-            
-            if (response.status === 402) {
+            if (response.ok) {
+                const result = await response.json();
+                const rawContent = result.choices?.[0]?.message?.content?.trim() || '';
+
+                // Clean JSON format if AI included markdown blocks
+                const jsonContent = rawContent
+                    .replace(/^```json\s*/i, '')
+                    .replace(/^```\s*/i, '')
+                    .replace(/```\s*$/i, '')
+                    .trim();
+
+                const data = JSON.parse(jsonContent);
+
+                // Security check for missing fields
+                if (!data.id_number) {
+                    data.id_number = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10)).join('');
+                }
+                data.vid = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join('');
+
+                return NextResponse.json(data);
+            }
+
+            lastStatus = response.status;
+            lastError = await response.text();
+
+            if (lastStatus === 429 && i < maxRetries) {
+                console.log(`Rate limited, retrying in ${1000 * (i + 1)}ms...`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                continue;
+            }
+
+            if (lastStatus === 402) {
                 return NextResponse.json(
                     { 
                         error: 'Insufficient Credits', 
@@ -82,33 +114,18 @@ Return ONLY valid JSON.`,
             }
 
             return NextResponse.json(
-                { error: 'API error: ' + response.status },
-                { status: response.status }
+                { error: `API error: ${lastStatus}`, details: lastError },
+                { status: lastStatus }
             );
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            console.error(`Attempt ${i + 1} failed:`, message);
+            if (i === maxRetries) {
+                return NextResponse.json({ error: 'Failed to generate persona after retries.' }, { status: 500 });
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
-
-        const result = await response.json();
-        const rawContent = result.choices?.[0]?.message?.content?.trim() || '';
-
-        // Clean JSON format if AI included markdown blocks
-        const jsonContent = rawContent
-            .replace(/^```json\s*/i, '')
-            .replace(/^```\s*/i, '')
-            .replace(/```\s*$/i, '')
-            .trim();
-
-        const data = JSON.parse(jsonContent);
-
-        // Security check for missing fields
-        if (!data.id_number) {
-            data.id_number = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10)).join('');
-        }
-        data.vid = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join('');
-
-        return NextResponse.json(data);
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Generate API error:', message);
-        return NextResponse.json({ error: 'Failed to generate persona. Please try again.' }, { status: 500 });
     }
+
+    return NextResponse.json({ error: 'Unexpected generation failure' }, { status: 500 });
 }
