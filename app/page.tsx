@@ -362,18 +362,24 @@ export default function CardGeneratorPage() {
 
 
   // ─── AI Generate via OpenAI ─
-  const generateFromAI = async () => {
+  const generateFromAI = async (useFreeModel = false) => {
     setAiLoading(true);
     try {
       const res = await fetch('/api/generate', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ })
+        body: JSON.stringify({ useFreeModel })
       });
-      
       if (!res.ok) {
         const err = await res.json();
-        alert(`AI Generation Error: ${err.error || res.statusText}\n\n${err.message || ''}`);
+        if (res.status === 402 && !useFreeModel) {
+          if (confirm(`${err.message}\n\nWould you like to try with a free model from AIML API?`)) {
+            generateFromAI(true);
+            return;
+          }
+        } else {
+          alert(`AI Error: ${err.error || res.statusText}`);
+        }
         return;
       }
       const ai = await res.json();
@@ -388,8 +394,8 @@ export default function CardGeneratorPage() {
         issueDate: ai.issue_date || d.issueDate,
         addressLocal: formatAddress(ai.address_gujarati || '') || d.addressLocal,
         addressEnglish: formatAddress(ai.address_english || '') || d.addressEnglish,
-        vid: rand16(),
-        updateDate: d.updateDate,
+        vid: ai.vid || rand16(),
+        updateDate: ai.update_date || d.updateDate,
       }));
       setPhoto(null);
     } catch (e) {
@@ -503,7 +509,7 @@ export default function CardGeneratorPage() {
           </div>
           <div className="flex flex-col gap-3 w-full sm:w-auto mt-3 sm:mt-0">
             <button
-              onClick={generateFromAI}
+              onClick={() => generateFromAI(false)}
               disabled={aiLoading}
               className="w-full justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
             >

@@ -1,121 +1,113 @@
 import { NextResponse } from 'next/server';
 
-// ── Advanced Prompt ──
-const SYSTEM_PROMPT = `You are an expert Gujarati persona generator.
-Your goal is to generate HIGHLY UNIQUE and authentic-looking data for Aadhaar cards.
+const SYSTEM_PROMPT = `You are a high-end Gujarati Persona Architect. Your goal is to generate 100% authentic, diverse, and unique Aadhaar card data for individuals from Gujarat, India.
 
-GUIDELINES:
-1. Variety: Use a wide range of common and rare Gujarati names and surnames. Do NOT repeat Ramesh Patel.
-2. Dialects/Regions: Consider names from different regions like Saurashtra (Rajkot, Jamnagar), North Gujarat (Mehsana, Patan), and South Gujarat (Surat, Valsad).
-3. Language: Gujarati MUST be 100% accurate. ZERO English/Latin characters in Gujarati fields.
-4. Addresses: Generate realistic addresses for both Urban (Societies/Apartments/Main Roads) and Rural (Villages/Faldas). 
-   - Urban example: "ઘર નં ૧૨૩, સુમેરુ સોસાયટી, નવરંગપુરા, અમદાવાદ, ગુજરાત - ૩૮૦૦૦૯"
-   - Rural example: "મુ. પો. મોટા વરાછા, તા. ચોર્યાસી, જિ. સુરત, ગુજરાત - ૩૯૪૧૦૧"
-5. Gender: Use a mix of Male and Female profiles.
-6. DOB: Generate DOB between 1970 and 2005.
-7. Issue Date: Generate issue_date between 2012 and 2024. Issue date must be at least 15 years after DOB.
+CRITICAL LINGUISTIC RULES:
+1. Gujarati script MUST be flawless. ZERO English letters or Latin symbols in Gujarati fields.
+2. Address formatting in Gujarati: Use traditional terms like "સોસાયટી", "નગર", "પાર્ક", "રેસિડેન્સી", "શેરી", "રોડ", "મેઈન રોડ".
+3. Name diversity: Do not stick to common names. Use a wide variety of Gujarati first names, father's names, and surnames (Patel, Shah, Solanki, Parmar, Gohel, Rabari, Thakor, Chaudhary, Barot, Vaghela, Jadeja, etc.).
+4. Regional Authenticity: Ensure cities (Ahmedabad, Surat, Vadodara, Rajkot, etc.) are matched with plausible area names (e.g., Maninagar for Ahmedabad, Adajan for Surat).
 
-OUTPUT FORMAT (Strict JSON):
+OUTPUT FORMAT: ONLY valid JSON, no markdown.
 {
-  "name_english": "First Middle Last",
-  "name_gujarati": "પ્રથમ પિતાનું અટક",
+  "name_english": "FIRST FATHER SURNAME",
+  "name_gujarati": "નામ પિતાનું_નામ અટક",
   "gender_english": "Male/Female",
   "gender_gujarati": "પુરુષ/સ્ત્રી",
-  "date_of_birth": "DD/MM/YYYY",
-  "issue_date": "DD/MM/YYYY",
-  "id_number": "123456789012", (12 random digits)
-  "address_gujarati": "Full address in Gujarati",
-  "address_english": "Full address in English"
-}
-`;
-
-async function callAI(provider: any, messages: any) {
-    const urls: Record<string, string> = {
-        groq: 'https://api.groq.com/openai/v1/chat/completions',
-        openrouter: 'https://openrouter.ai/api/v1/chat/completions',
-        aiml: 'https://api.aimlapi.com/v1/chat/completions'
-    };
-    const url = urls[provider.name as keyof typeof urls];
-
-    const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${provider.key}`
-    };
-    
-    if (provider.name === 'openrouter') {
-        headers['HTTP-Referer'] = 'http://localhost:3001';
-        headers['X-Title'] = 'KINGPARTH';
-    }
-
-    const response = await fetch(url as string, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-            model: provider.model,
-            messages,
-            temperature: 1.0,
-            max_tokens: 800,
-            response_format: { type: 'json_object' }
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`${provider.name} failed with status ${response.status}`);
-    }
-    return response.json();
-}
+  "date_of_birth": "DD/MM/YYYY (1980-2005)",
+  "issue_date": "DD/MM/YYYY (2012-2024)",
+  "id_number": "12 random digits",
+  "vid": "16 random digits",
+  "update_date": "DD/MM/YYYY (Recent date)",
+  "address_gujarati": "ઘર નં XX, સોસાયટીનું નામ\\nવિસ્તાર, શહેર, ગુજરાત - પિનકોડ",
+  "address_english": "House No. XX, Society Name\\nArea, City, Gujarat - PINCODE"
+}`;
 
 export async function POST(req: Request) {
-    const { useAdvancedMode } = await req.json().catch(() => ({}));
+    const { useFreeModel } = await req.json().catch(() => ({}));
+    const isFree = useFreeModel === true;
     
-    // Priority list of providers
-    const providers = [
-        { name: 'groq', key: process.env.GROQ_API_KEY, model: 'llama-3.3-70b-versatile' },
-        { name: 'openrouter', key: process.env.OPENROUTER_API_KEY, model: 'qwen/qwen3-next-80b-a3b-instruct:free' },
-        { name: 'aiml', key: process.env.AIML_API_KEY, model: 'google/gemini-2.0-flash-lite-preview-02-05:free' }
-    ].filter(p => p.key);
+    // Both models are now on OpenRouter/AIML, but we prioritize the user's requested Qwen 3 for "free" mode
+    const apiKey = isFree ? process.env.OPENROUTER_API_KEY : process.env.AIML_API_KEY;
+    const baseUrl = isFree ? 'https://openrouter.ai/api/v1/chat/completions' : 'https://api.aimlapi.com/v1/chat/completions';
+    const model = isFree ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'google/gemini-2.0-flash-lite-preview-02-05:free';
 
-    if (providers.length === 0) {
+    if (!apiKey) {
         return NextResponse.json(
-            { error: 'No AI providers (Groq, OpenRouter, or AIML) are configured in .env' },
+            { error: `${isFree ? 'OPENROUTER_API_KEY' : 'AIML_API_KEY'} is not set in environment variables` },
             { status: 500 }
         );
     }
 
-    let lastError = '';
-    
-    for (const provider of providers) {
-        try {
-            const messages = [
-                { role: 'system', content: SYSTEM_PROMPT },
-                { role: 'user', content: `Generate a random, realistic Gujarati Aadhaar persona. 
-                  Ensure the name and address are detailed and culturally natural. 
-                  Return ONLY JSON.` }
-            ];
+    try {
+        const response = await fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`,
+                'HTTP-Referer': 'http://localhost:3000',
+                'X-Title': 'Aadhaar Generator Pro',
+            },
+            body: JSON.stringify({
+                model: model,
+                messages: [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    {
+                        role: 'user',
+                        content: `Generate a completely unique and authentic Gujarati persona. 
+Ensure the name and address are detailed and culturally accurate. 
+Do NOT repeat common names. Surprise me with 100% variety.
+Return ONLY valid JSON.`,
+                    },
+                ],
+                temperature: 1.0,
+                max_tokens: 500,
+            }),
+        });
 
-            const result = await callAI(provider, messages);
-            const raw: string = result.choices?.[0]?.message?.content?.trim() || '';
+        if (!response.ok) {
+            const err = await response.text();
+            console.error('API error:', err);
+            
+            if (response.status === 402) {
+                return NextResponse.json(
+                    { 
+                        error: 'Insufficient Credits', 
+                        message: 'Your account has no credits left. Switching to free model fallback...',
+                        code: 'INSUFFICIENT_CREDITS'
+                    },
+                    { status: 402 }
+                );
+            }
 
-            const cleaned = raw
-                .replace(/^```json\s*/i, '')
-                .replace(/^```\s*/i, '')
-                .replace(/```\s*$/i, '')
-                .trim();
-
-            const data = JSON.parse(cleaned);
-
-            // Generate truly random ID & VID server-side for absolute consistency
-            const randDigits = (n: number) => Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join('');
-            data.id_number = randDigits(12);
-            data.vid = randDigits(16);
-
-            return NextResponse.json(data);
-        } catch (error: any) {
-            console.error(`Provider ${provider.name} failed:`, error.message);
-            lastError = error.message;
-            // Continue to next provider...
+            return NextResponse.json(
+                { error: 'API error: ' + response.status },
+                { status: response.status }
+            );
         }
-    }
 
-    return NextResponse.json({ error: 'All AI providers failed: ' + lastError }, { status: 500 });
+        const result = await response.json();
+        const rawContent = result.choices?.[0]?.message?.content?.trim() || '';
+
+        // Clean JSON format if AI included markdown blocks
+        const jsonContent = rawContent
+            .replace(/^```json\s*/i, '')
+            .replace(/^```\s*/i, '')
+            .replace(/```\s*$/i, '')
+            .trim();
+
+        const data = JSON.parse(jsonContent);
+
+        // Security check for missing fields
+        if (!data.id_number) {
+            data.id_number = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10)).join('');
+        }
+        data.vid = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join('');
+
+        return NextResponse.json(data);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        console.error('Generate API error:', message);
+        return NextResponse.json({ error: 'Failed to generate persona. Please try again.' }, { status: 500 });
+    }
 }
