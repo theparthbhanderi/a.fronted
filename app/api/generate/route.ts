@@ -105,12 +105,15 @@ const SURNAMES: [string, string][] = [
     ['Gadhavi', 'ગઢવી'], ['Chavda', 'ચાવડા'], ['Dabhi', 'ડાભી'],
 ];
 
-export async function POST() {
-    const apiKey = process.env.OPENROUTER_API_KEY;
+export async function POST(req: Request) {
+    const { useFreeModel } = await req.json().catch(() => ({}));
+    const isFree = useFreeModel === true;
+    const apiKey = isFree ? process.env.AIML_API_KEY : process.env.OPENROUTER_API_KEY;
+    const baseUrl = isFree ? 'https://api.aimlapi.com/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
 
     if (!apiKey) {
         return NextResponse.json(
-            { error: 'OPENROUTER_API_KEY is not set in environment variables' },
+            { error: `${isFree ? 'AIML_API_KEY' : 'OPENROUTER_API_KEY'} is not set in environment variables` },
             { status: 500 }
         );
     }
@@ -184,7 +187,7 @@ export async function POST() {
     const addrEn = `House No. ${houseNo}, ${society[0]}\n${area[0]}, ${road[0]}\n${city[0]}, Gujarat - ${pin}`;
 
     try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        const response = await fetch(baseUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -193,7 +196,7 @@ export async function POST() {
                 'X-Title': 'KINGPARTH',
             },
             body: JSON.stringify({
-                model: 'openai/gpt-4o-mini',
+                model: isFree ? 'google/gemini-2.0-flash-lite-preview-02-05:free' : 'openai/gpt-4o-mini',
                 messages: [
                     { role: 'system', content: SYSTEM_PROMPT },
                     {
@@ -220,6 +223,18 @@ Return ONLY JSON.`,
         if (!response.ok) {
             const err = await response.text();
             console.error('OpenRouter API error:', err);
+            
+            if (response.status === 402) {
+                return NextResponse.json(
+                    { 
+                        error: 'Insufficient Credits', 
+                        message: 'Your OpenRouter account has no credits left. Please top up or switch to a free model.',
+                        code: 'INSUFFICIENT_CREDITS'
+                    },
+                    { status: 402 }
+                );
+            }
+
             return NextResponse.json(
                 { error: 'OpenRouter API error: ' + response.status },
                 { status: response.status }
