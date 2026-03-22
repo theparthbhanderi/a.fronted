@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeSVG } from 'qrcode.react';
 
