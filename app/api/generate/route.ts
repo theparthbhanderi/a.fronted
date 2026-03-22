@@ -27,15 +27,23 @@ export async function POST(req: Request) {
     const { useFreeModel } = await req.json().catch(() => ({}));
     const isFree = useFreeModel === true;
     
-    // Models and Keys configured as per user request
+    // Multiple users support: Use custom key from header or rotate through pooled keys from environment
+    const customKey = req.headers.get('x-custom-key');
     const isNext = isFree === true;
-    const apiKey = isNext ? process.env.OPENROUTER_API_KEY_NEXT : process.env.OPENROUTER_API_KEY_CODER;
+    
+    let apiKey = customKey;
+    if (!apiKey) {
+        const poolStr = isNext ? process.env.OPENROUTER_API_KEY_NEXT : process.env.OPENROUTER_API_KEY_CODER;
+        const pool = (poolStr || '').split(',').map((k: string) => k.trim()).filter(Boolean);
+        apiKey = pool[Math.floor(Math.random() * pool.length)];
+    }
+
     const baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
     const model = isNext ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'qwen/qwen3-coder:free';
 
     if (!apiKey) {
         return NextResponse.json(
-            { error: `${isNext ? 'OPENROUTER_API_KEY_NEXT' : 'OPENROUTER_API_KEY_CODER'} is not set in environment variables` },
+            { error: `${isNext ? 'OPENROUTER_API_KEY_NEXT' : 'OPENROUTER_API_KEY_CODER'} is not configured on the server, and no custom key provided.` },
             { status: 500 }
         );
     }
