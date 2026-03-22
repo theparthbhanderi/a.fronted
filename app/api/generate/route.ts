@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     // Priority list of providers
     const providers = [
         { name: 'groq', key: process.env.GROQ_API_KEY, model: 'llama-3.3-70b-versatile' },
-        { name: 'openrouter', key: process.env.OPENROUTER_API_KEY, model: 'google/gemini-2.0-flash-lite-preview-02-05:free' },
+        { name: 'openrouter', key: process.env.OPENROUTER_API_KEY, model: 'qwen/qwen3-next-80b-a3b-instruct:free' },
         { name: 'aiml', key: process.env.AIML_API_KEY, model: 'google/gemini-2.0-flash-lite-preview-02-05:free' }
     ].filter(p => p.key);
 
