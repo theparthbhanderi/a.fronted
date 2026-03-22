@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const isNext = isFree === true;
     const apiKey = isNext ? process.env.OPENROUTER_API_KEY_NEXT : process.env.OPENROUTER_API_KEY_CODER;
     const baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    const model = isNext ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'qwen/qwen3-coder-480b-a35b-instruct:free';
+    const model = isNext ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'qwen/qwen3-coder:free';
 
     if (!apiKey) {
         return NextResponse.json(
