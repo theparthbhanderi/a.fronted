@@ -322,7 +322,7 @@ export default function CardGeneratorPage() {
                 allowTaint: true,
             });
 
-            canvas.toBlob((blob) => {
+            canvas.toBlob((blob: Blob | null) => {
                 if (!blob) {
                     alert('Error: Failed to generate image blob');
                     setIsDownloading(false);
