@@ -569,21 +569,36 @@ export default function CardGeneratorPage() {
 
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-[420px] xl:max-w-7xl mx-auto px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3">
+        <div className="max-w-[420px] xl:max-w-7xl mx-auto px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 relative">
+          
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shrink-0 bg-white rounded-lg shadow-sm overflow-hidden">
                 <img src="/logo.png" alt="KINGPARTH Logo" className="w-full h-full object-contain" />
               </div>
               <div>
-                <h1 className="text-sm sm:text-base font-bold">KINGPARTH</h1>
-                <div className="flex items-center gap-2">
-                  <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
-                  <a href="/format-2" className="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded hover:bg-slate-700 transition-colors text-white whitespace-nowrap">Go to Format 2</a>
-                </div>
+                <h1 className="text-sm sm:text-base font-bold flex items-center gap-2">
+                  KINGPARTH <span className="hidden sm:inline-block bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px]">Realism Engine</span>
+                </h1>
+                <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold mt-0.5">Pixel-Perfect Document Mode</p>
               </div>
             </div>
+            
+            <a href="/format-2" className="xl:hidden sm:hidden text-[10px] bg-slate-800 border border-slate-700 px-2 py-1.5 rounded hover:bg-slate-700 text-white font-semibold">
+              <span className="sr-only">Go to </span>PAN
+            </a>
           </div>
+
+          {/* CENTRAL TABS */}
+          <div className="absolute left-1/2 -translate-x-1/2 hidden xl:flex items-center bg-slate-800 p-1 rounded-lg border border-slate-700 shadow-inner">
+            <div className="px-5 py-1.5 text-xs font-bold rounded-md bg-slate-700 text-white shadow shadow-black/20">
+              Aadhaar Card
+            </div>
+            <a href="/format-2" className="px-5 py-1.5 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-colors">
+              PAN Card
+            </a>
+          </div>
+
           <div className="flex flex-col gap-3 w-full sm:w-auto mt-3 sm:mt-0">
             <button
               onClick={handlePrint}
