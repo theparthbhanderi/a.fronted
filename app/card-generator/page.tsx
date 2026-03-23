@@ -102,7 +102,8 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                     padding: '3px 4px',
                     marginTop: 4,
                     width: '100%',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    textAlign: 'justify'
                 }}>
                     <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25, fontWeight: 'bold' }}>
                         આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.

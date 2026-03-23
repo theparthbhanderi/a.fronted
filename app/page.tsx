@@ -112,7 +112,8 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
           padding: '3px 5px',
           marginTop: 4,
           width: '100%',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          textAlign: 'justify'
         }}>
           {/* Gujarati disclaimer */}
           <div style={{ fontSize: 10, color: '#000', lineHeight: 1.25, fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>
