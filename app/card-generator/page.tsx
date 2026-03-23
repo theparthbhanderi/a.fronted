@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { toPng } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -37,15 +37,13 @@ const DynamicQRCode = ({ data }: { data: CardData }) => {
     const yearOfBirth = data.dob.split('/').pop() || data.dob;
 
     // Standard Aadhaar QR data + high-density signature payload to match official scan complexity
-    const signature = "MIIEPgYJKoZIhvcNAQcCoIIELzCCBysCAQExADALBgkqhkiG9w0BBwGgggSVMIIDkTCCAnmgAwIBAgIIYmJSUWqT1jkwDQYJKoZIhvcNAQEFBQAwRTELMAkGA1UEBhMCSU4xEDAOBgNVBAoTBzQzM2QwZDEwO" + 
-                      "SDAuBgNVBAsTJ0NlcnRpZmljYXRpb24gQXV0aG9yaXR5IEluZGlhIChDQUktVUlEQUkpMRYwFAYDVQQDEw1VSURBSSBDQS0yMDE0MB4XDTE0MDEyMzA3NDUzOFoXDTI0MDEyMTE3NDUzOFowRTELMAkGA1UEBhMCSU4x" + 
-                      "EDAOBgNVBAoTBzQzM2QwZDEwO";
+    const signature = "MIIEPgYJKoZIhvcNAQcCoIIELzCCBysCAQExADALBgkqhkiG9w0BBwGgggSVMIIDkTCCAnmgAwIBAgIIYmJSUWqT1jkwDQYJKoZIhvcNAQEFBQAwRTELMAkGA1UEBhMCSU4xEDAOBgNVBAoTBzQzM2QwZDEwOSDAuBgNVBAsTJ0NlcnRpZmljYXRpb24gQXV0aG9yaXR5IEluZGlhIChDQUktVUlEQUkpMRYwFAYDVQQDEw1VSURBSSBDQS0yMDE0MB4XDTE0MDEyMzA3NDUzOFoXDTI0MDEyMTE3NDUzOFowRTELMAkGA1UEBhMCSU4xEDAOBgNVBAoTBzQzM2QwZDEwO";
 
     const qrString = `<?xml version="1.0" encoding="UTF-8"?><PrintLetterBarcodeData uid="${data.idNumber.replace(/\D/g, '')}" name="${data.nameEnglish}" gender="${data.gender.charAt(0).toUpperCase()}" yob="${yearOfBirth}" co="${data.nameEnglish}" house="" street="" lm="" loc="" vtc="" dist="Anand" state="Gujarat" pc="364505" dob="${data.dob}" address="${cleanAddressInfo}" signature="${signature}" />`;
 
     return (
         <div style={{ width: 140, height: 140, background: '#fff', padding: 2, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <QRCodeSVG value={qrString} size={138} level="H" includeMargin={false} />
+            <QRCodeCanvas value={qrString} size={138} level="H" includeMargin={false} />
         </div>
     );
 };
@@ -313,7 +311,7 @@ export default function CardGeneratorPage() {
         setIsDownloading(true);
         try {
             const dataUrl = await toPng(element, {
-                pixelRatio: 3, // Highly detailed but safer for mobile memory
+                pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
                 backgroundColor: '#ffffff',
                 cacheBust: true,
             });

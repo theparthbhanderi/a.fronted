@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { toPng } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -42,7 +42,7 @@ const DynamicQR = ({ data }: { data: CardData }) => {
 
   return (
     <div style={{ width: 140, height: 140, background: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <QRCodeSVG value={qrValue} size={138} level="H" includeMargin={false} />
+      <QRCodeCanvas value={qrValue} size={138} level="H" includeMargin={false} />
     </div>
   );
 };
@@ -391,7 +391,7 @@ export default function CardGeneratorPage() {
     setIsDownloading(true);
     try {
       const dataUrl = await toPng(element, {
-        pixelRatio: 3, // Highly detailed but safer for mobile memory
+        pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
         backgroundColor: '#ffffff',
         cacheBust: true,
       });
