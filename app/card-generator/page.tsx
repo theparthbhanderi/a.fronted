@@ -200,6 +200,16 @@ const BackCard = ({ data }: { data: CardData }) => (
     </div>
 );
 
+// ─── Action Button ────────────────────────────────────────────────────────────
+const ActionBtn = ({ onClick, children, className = '' }: { onClick: () => void, children: React.ReactNode, className?: string }) => (
+    <button
+        onClick={onClick}
+        className={`bg-slate-700/50 hover:bg-slate-600 border border-slate-600/50 text-indigo-300 font-bold rounded-lg transition-all active:scale-95 ${className}`}
+    >
+        {children}
+    </button>
+);
+
 // ─── Field Input ──────────────────────────────────────────────────────────────
 const Field = ({
     label, value, onChange, placeholder, type = 'text', isTextArea = false
@@ -263,6 +273,16 @@ export default function CardGeneratorPage() {
             }
         } catch (e) { console.error('Transliteration failed', e); }
     };
+
+    const getRandomDate = (startYear: number, endYear: number) => {
+        const year = Math.floor(Math.random() * (endYear - startYear + 1)) + startYear;
+        const month = Math.floor(Math.random() * 12) + 1;
+        const day = Math.floor(Math.random() * 28) + 1; // Safe for all months
+        return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+    };
+
+    const generateIssueDate = () => set('issueDate')(getRandomDate(2012, 2015));
+    const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
 
     const previewRef = useRef<HTMLDivElement>(null);
     const set = (k: keyof CardData) => (v: string) => setData((d) => ({ ...d, [k]: v }));
@@ -410,7 +430,19 @@ export default function CardGeneratorPage() {
                             <Field label="Gender" value={data.gender} onChange={set('gender')} />
                             <Field label="Gender (Gujarati)" value={data.genderLocal} onChange={set('genderLocal')} />
                             <Field label="12-Digit ID Number" value={data.idNumber} onChange={set('idNumber')} />
-                            <Field label="Issue Date" value={data.issueDate} onChange={set('issueDate')} />
+                            <div className="flex flex-col space-y-2">
+                                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
+                                <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+                                    <input
+                                        type="text"
+                                        value={data.issueDate}
+                                        onChange={(e) => set('issueDate')(e.target.value)}
+                                        placeholder="DD/MM/YYYY"
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                    />
+                                    <ActionBtn onClick={generateIssueDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -431,7 +463,19 @@ export default function CardGeneratorPage() {
                             />
                             <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
                             <Field label="16-Digit Virtual ID (VID)" value={data.vid} onChange={set('vid')} />
-                            <Field label="Last Updated Date" value={data.updateDate} onChange={set('updateDate')} />
+                            <div className="flex flex-col space-y-2">
+                                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
+                                <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
+                                    <input
+                                        type="text"
+                                        value={data.updateDate}
+                                        onChange={(e) => set('updateDate')(e.target.value)}
+                                        placeholder="DD/MM/YYYY"
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                    />
+                                    <ActionBtn onClick={generateUpdateDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>

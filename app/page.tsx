@@ -351,6 +351,16 @@ export default function CardGeneratorPage() {
   const generateId = () => setData((d) => ({ ...d, idNumber: rand12() }));
   const generateVid = () => setData((d) => ({ ...d, vid: rand16() }));
 
+  const getRandomDate = (startYear: number, endYear: number) => {
+    const year = Math.floor(Math.random() * (endYear - startYear + 1)) + startYear;
+    const month = Math.floor(Math.random() * 12) + 1;
+    const day = Math.floor(Math.random() * 28) + 1; // Safe for all months
+    return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+  };
+
+  const generateIssueDate = () => set('issueDate')(getRandomDate(2012, 2015));
+  const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
+
 
 
   // ─── Date Pickers ─
@@ -627,7 +637,7 @@ export default function CardGeneratorPage() {
               {/* Issue Date — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
-                <div className="grid grid-cols-[1fr_90px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_90px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.issueDate}
@@ -641,6 +651,7 @@ export default function CardGeneratorPage() {
                     onChange={(e) => handleIssueDatePick(e.target.value)}
                     className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
+                  <ActionBtn onClick={generateIssueDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                 </div>
               </div>
             </div>
@@ -682,7 +693,7 @@ export default function CardGeneratorPage() {
               {/* Update Date — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
-                <div className="grid grid-cols-[1fr_90px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_90px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.updateDate}
@@ -696,6 +707,7 @@ export default function CardGeneratorPage() {
                     onChange={(e) => handleUpdateDatePick(e.target.value)}
                     className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
+                  <ActionBtn onClick={generateUpdateDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                 </div>
               </div>
             </div>
