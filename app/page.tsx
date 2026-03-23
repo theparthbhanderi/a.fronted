@@ -133,7 +133,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
               Aadhaar is proof of identity, not of citizenship
             </div>
             <div style={{ textAlign: 'justify', textAlignLast: 'justify' }}>
-              or date of birth. It should be used with verification (online
+              <span style={{ fontWeight: 'bold' }}>or date of birth.</span> It should be used with verification (online
             </div>
             <div style={{ textAlign: 'left' }}>
               authentication, or scanning of QR code / offline XML).
