@@ -19,13 +19,13 @@ interface PanData {
   issueDate: string;
 }
 
-const PanCard = ({ data, photoSrc, scanMode }: any) => {
+const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
 
   const qrData = `PAN:${data.panNumber}|NAME:${data.name}|FNAME:${data.fatherName}|DOB:${data.dob}|TYPE:INDIVIDUAL|STATUS:ACTIVE|CATEGORY:P|ISSUED:${data.issueDate}|ISSUER:NSDL_E_GOV|AO_CODE:ITO-W-24(3)-DEL|JURISDICTION:DELHI|ADDR:AHMEDABAD,GUJARAT,380015,IN|REF:${data.panNumber}${data.dob.replace(/\//g, '')}|HASH:SHA256:${data.panNumber.split('').map((c: string) => c.charCodeAt(0).toString(16)).join('')}|SIG:INCOME_TAX_DEPT_DIGITAL_CERT_2023|VERIFY:https://www.incometax.gov.in/iec/foportal/verify-pan-details`;
 
   return (
     <div
-      id="pan-card"
+      id={id}
       style={{
         width: 420,
         height: 265,
@@ -284,7 +284,7 @@ export default function PanGeneratorPage() {
   };
 
   const handleDownload = async () => {
-    const el = document.getElementById('pan-card');
+    const el = document.getElementById('pan-capture-hidden');
     if (!el) return;
     setIsDownloading(true);
     try {
@@ -375,6 +375,11 @@ export default function PanGeneratorPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative">
+
+        {/* HIDDEN CAPTURE (Ensures it's always in DOM and visible for html-to-image to work on mobile) */}
+        <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
+           <PanCard id="pan-capture-hidden" data={data} photoSrc={photo} scanMode={scanMode} />
+        </div>
 
         {/* LEFT: FORM */}
         <div className="flex flex-col space-y-6">
