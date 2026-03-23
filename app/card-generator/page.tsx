@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeSVG } from 'qrcode.react';
+import { toPng } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface CardData {
@@ -103,12 +104,14 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                     width: '100%',
                     boxSizing: 'border-box'
                 }}>
-                    <div style={{ fontSize: 9, color: '#000', lineHeight: 1.25 }}>
-                        <span style={{ fontWeight: 'bold' }}>આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.</span><br />
+                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25, fontWeight: 'bold' }}>
+                        આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.
+                    </div>
+                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25 }}>
                         તેનો ઉપયોગ માત્ર ચકાસણી (ઓનલાઇન પ્રમાણીકરણ અથવા ક્યુઆર<br />
                         કોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.
                     </div>
-                    <div style={{ fontSize: 9, color: '#000', lineHeight: 1.25, marginTop: 1.5 }}>
+                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25, marginTop: 2 }}>
                         <span style={{ fontWeight: 'bold' }}>Aadhaar is proof of identity, not of citizenship<br />
                             or date of birth.</span> It should be used with verification (online<br />
                         authentication, or scanning of QR code / offline XML).
@@ -246,6 +249,8 @@ export default function CardGeneratorPage() {
     const [photo, setPhoto] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
     const [autoTranslate, setAutoTranslate] = useState(true);
+    const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     // Default PDF Data - Exact Match
     const [data, setData] = useState<CardData>({
@@ -285,6 +290,30 @@ export default function CardGeneratorPage() {
 
     const generateIssueDate = () => set('issueDate')(getRandomDate(2012, 2015));
     const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
+
+    const handleDownload = async (side: 'front' | 'back') => {
+        const id = side === 'front' ? 'aadhaar-front' : 'aadhaar-back';
+        const element = document.getElementById(id);
+        if (!element) return;
+
+        setIsDownloading(true);
+        try {
+            const dataUrl = await toPng(element, {
+                pixelRatio: 4,
+                backgroundColor: '#ffffff',
+                cacheBust: true,
+            });
+            const link = document.createElement('a');
+            link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
+            link.href = dataUrl;
+            link.click();
+            setIsDownloadModalOpen(false);
+        } catch (err) {
+            console.error('Download failed', err);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
 
     const previewRef = useRef<HTMLDivElement>(null);
     const set = (k: keyof CardData) => (v: string) => setData((d) => ({ ...d, [k]: v }));
@@ -482,11 +511,21 @@ export default function CardGeneratorPage() {
                 </div>
             </div>
 
-            {/* ─── Right: Desktop Live Preview (Visible on XL+) ─── */}
-                <div className="hidden xl:flex flex-col gap-5 items-center xl:items-start xl:sticky xl:top-24 xl:self-start">
-                    <div className="flex items-center gap-2 self-start">
-                        <h2 className="text-sm font-bold text-white">Live Preview</h2>
-                        <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">Perfect Ditto</span>
+                <div className="hidden xl:flex flex-col gap-5 items-start sticky top-24 self-start">
+                    <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                            <h2 className="text-sm font-bold text-white">Live Preview</h2>
+                            <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">Perfect Ditto</span>
+                        </div>
+                        <button 
+                            onClick={() => setIsDownloadModalOpen(true)}
+                            className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-white transition-colors flex items-center gap-1.5"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Download HQ PNG
+                        </button>
                     </div>
 
                     <div id="card-preview" ref={previewRef} className="flex flex-col gap-4 bg-white/5 p-4 rounded-xl border border-slate-700 shadow-2xl">
@@ -503,21 +542,97 @@ export default function CardGeneratorPage() {
             </div>
 
             {/* ─── Mobile Sticky Bottom Bar ─── */}
-            <div className="xl:hidden fixed bottom-0 left-0 right-0 p-4 bg-slate-900/90 backdrop-blur-xl border-t border-slate-700/50 z-[60] flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+            <div className="xl:hidden fixed bottom-0 left-0 right-0 p-4 bg-slate-900/95 backdrop-blur-2xl border-t border-slate-700/50 z-[60] flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.6)]">
                 <div className="flex flex-col">
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Aadhaar Card</span>
                     <span className="text-xs text-emerald-400 font-bold">Ready for PDF</span>
                 </div>
-                <button
-                    onClick={handlePrint}
-                    className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center gap-2"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Save / Print PDF
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setIsDownloadModalOpen(true)}
+                        className="bg-slate-800 hover:bg-slate-700 active:scale-95 text-white p-3 rounded-xl transition-all border border-slate-700"
+                        title="Download as Image"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                    <button
+                        onClick={handlePrint}
+                        className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center gap-2"
+                    >
+                        Save / Print PDF
+                    </button>
+                </div>
             </div>
+
+            {/* ─── Download Selection Modal ─── */}
+            {isDownloadModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div 
+                        className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+                        onClick={() => !isDownloading && setIsDownloadModalOpen(false)}
+                    />
+                    <div className="relative bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+                        <div className="p-6 text-center border-b border-slate-800">
+                            <h3 className="text-xl font-bold text-white">Download Card</h3>
+                            <p className="text-sm text-slate-400 mt-1">Select card side for HQ PNG export</p>
+                        </div>
+                        
+                        <div className="p-4 grid grid-cols-1 gap-3">
+                            <button 
+                                onClick={() => handleDownload('front')}
+                                disabled={isDownloading}
+                                className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-indigo-600/20 border border-slate-700 hover:border-indigo-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-indigo-600/20 rounded-xl flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                        🪪
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="font-bold text-white">Front Card</p>
+                                        <p className="text-[11px] text-slate-500 uppercase font-bold tracking-tight">Standard ID View</p>
+                                    </div>
+                                </div>
+                                <div className="text-slate-600 group-hover:text-indigo-400">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </button>
+
+                            <button 
+                                onClick={() => handleDownload('back')}
+                                disabled={isDownloading}
+                                className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-emerald-600/20 border border-slate-700 hover:border-emerald-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-emerald-600/20 rounded-xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                                        🗺️
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="font-bold text-white">Back Card</p>
+                                        <p className="text-[11px] text-slate-500 uppercase font-bold tracking-tight">Address & QR View</p>
+                                    </div>
+                                </div>
+                                <div className="text-slate-600 group-hover:text-emerald-400">
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+
+                        <button 
+                            onClick={() => setIsDownloadModalOpen(false)}
+                            disabled={isDownloading}
+                            className="w-full py-4 text-sm font-bold text-slate-500 hover:text-white transition-colors bg-slate-900/50"
+                        >
+                            {isDownloading ? 'Exporting High Quality...' : 'Cancel'}
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Spacer for bottom bar */}
             <div className="xl:hidden h-24" />
