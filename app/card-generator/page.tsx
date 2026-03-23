@@ -124,12 +124,14 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
             </div>
         </div>
 
-        {/* Footer Image (Compressed/Dabai hui to fit exactly like PDF) */}
-        <img
-            src="/images/front-card-logo.png?v=2"
-            alt="Front Footer"
-            style={{ width: '100%', height: 20, objectFit: 'fill', display: 'block', flexShrink: 0 }}
-        />
+        {/* Footer Image with red line above */}
+        <div style={{ borderTop: '2px solid #cc3333', flexShrink: 0 }}>
+            <img
+                src="/images/front-card-logo.png?v=2"
+                alt="Front Footer"
+                style={{ width: '100%', height: 20, objectFit: 'fill', display: 'block' }}
+            />
+        </div>
     </div>
 );
 
@@ -190,7 +192,7 @@ const BackCard = ({ data }: { data: CardData }) => (
         </div>
 
         {/* Back Footer Wrapper to add the red top border like original */}
-        <div style={{ height: 20, width: '100%', borderTop: '1px solid #cc3333', flexShrink: 0 }}>
+        <div style={{ height: 20, width: '100%', borderTop: '2px solid #cc3333', flexShrink: 0 }}>
             <img
                 src="/images/back-header-logo.png?v=2"
                 alt="Back Footer"

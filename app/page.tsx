@@ -135,7 +135,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
     </div>
 
     {/* ── Footer with red line above ── */}
-    <div style={{ borderTop: '3px solid #cc3333', flexShrink: 0 }}>
+    <div style={{ borderTop: '2px solid #cc3333', flexShrink: 0 }}>
       <img
         src="/images/front-card-logo.png?v=2"
         alt="Front Footer"
