@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeCanvas } from 'qrcode.react';
-import { toPng } from 'html-to-image';
+import { toPng, toBlob } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface CardData {
@@ -310,11 +310,14 @@ export default function CardGeneratorPage() {
 
         setIsDownloading(true);
         try {
-            const dataUrl = await toPng(element, {
+            const blob = await toBlob(element, {
                 pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
                 backgroundColor: '#ffffff',
                 cacheBust: true,
             });
+
+            if (!blob) return;
+            const dataUrl = window.URL.createObjectURL(blob);
             
             const link = document.createElement('a');
             link.style.display = 'none';
@@ -327,7 +330,8 @@ export default function CardGeneratorPage() {
             // Small delay before cleanup for mobile browser reliability
             setTimeout(() => {
                 document.body.removeChild(link);
-            }, 200);
+                window.URL.revokeObjectURL(dataUrl);
+            }, 400);
 
             setIsDownloadModalOpen(false);
         } catch (err) {
