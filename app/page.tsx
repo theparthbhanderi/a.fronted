@@ -43,7 +43,7 @@ const DynamicQR = ({ data }: { data: CardData }) => {
 };
 
 // ─── Front Card ───────────────────────────────────────────────────────────────
-const FrontCard = ({ data, photoSrc }: { data: any, photoSrc: string | null }) => (
+const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null }) => (
   <div style={{
     width: 450, height: 284, background: '#fff',
     border: '1px solid #000',
@@ -146,7 +146,7 @@ const FrontCard = ({ data, photoSrc }: { data: any, photoSrc: string | null }) =
 );
 
 // ─── Back Card ────────────────────────────────────────────────────────────────
-const BackCard = ({ data }: { data: any }) => (
+const BackCard = ({ data }: { data: CardData }) => (
   <div style={{
     width: 450, height: 284, background: '#fff',
     border: '1px solid #000',
@@ -295,7 +295,6 @@ const ActionBtn = ({ onClick, children, className = '' }: React.ButtonHTMLAttrib
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function CardGeneratorPage() {
-  const [showToast, setShowToast] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
   const [autoTranslate, setAutoTranslate] = useState(true);
