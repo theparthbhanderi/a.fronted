@@ -62,7 +62,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
         />
 
         {/* Body Area (Auto expands and pushes footer down) */}
-        <div style={{ display: 'flex', padding: '5px 12px 0 8px', flex: 1 }}>
+        <div style={{ display: 'flex', padding: '5px 12px 0 16px', flex: 1 }}>
             {/* Left col: issue date + photo */}
             <div style={{ display: 'flex', gap: 5, alignItems: 'flex-start', flexShrink: 0 }}>
                 <div style={{
