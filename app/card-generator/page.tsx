@@ -105,17 +105,13 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                     boxSizing: 'border-box',
                     textAlign: 'justify'
                 }}>
-                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25, fontWeight: 'bold' }}>
-                        આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.
+                    <div style={{ fontSize: 10, color: '#000', lineHeight: 1.2, fontFamily: 'Arial, sans-serif' }}>
+                        <span style={{ fontWeight: 'bold' }}>આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.</span>
+                        <span> તેનો ઉપયોગ માત્ર ચકાસણી (ઓનલાઇન પ્રમાણીકરણ અથવા ક્યુઆર કોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.</span>
                     </div>
-                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25 }}>
-                        તેનો ઉપયોગ માત્ર ચકાસણી (ઓનલાઇન પ્રમાણીકરણ અથવા ક્યુઆર<br />
-                        કોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.
-                    </div>
-                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.25, marginTop: 2 }}>
-                        <span style={{ fontWeight: 'bold' }}>Aadhaar is proof of identity, not of citizenship<br />
-                            or date of birth.</span> It should be used with verification (online<br />
-                        authentication, or scanning of QR code / offline XML).
+                    <div style={{ fontSize: 10, color: '#000', lineHeight: 1.2, marginTop: 3, fontFamily: 'Arial, sans-serif' }}>
+                        <span style={{ fontWeight: 'bold' }}>Aadhaar is proof of identity, not of citizenship or date of birth.</span>
+                        <span> It should be used with verification (online authentication, or scanning of QR code / offline XML).</span>
                     </div>
                 </div>
             </div>
