@@ -313,14 +313,24 @@ export default function CardGeneratorPage() {
         setIsDownloading(true);
         try {
             const dataUrl = await toPng(element, {
-                pixelRatio: 4,
+                pixelRatio: 3, // Highly detailed but safer for mobile memory
                 backgroundColor: '#ffffff',
                 cacheBust: true,
             });
+            
             const link = document.createElement('a');
-            link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
+            link.style.display = 'none';
             link.href = dataUrl;
+            link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
+            
+            document.body.appendChild(link);
             link.click();
+            
+            // Small delay before cleanup for mobile browser reliability
+            setTimeout(() => {
+                document.body.removeChild(link);
+            }, 200);
+
             setIsDownloadModalOpen(false);
         } catch (err) {
             console.error('Download failed', err);
