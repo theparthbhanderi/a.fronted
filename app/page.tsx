@@ -319,19 +319,6 @@ const ActionBtn = ({ onClick, children, className = '' }: React.ButtonHTMLAttrib
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function CardGeneratorPage() {
   const [photo, setPhoto] = useState<string | null>(null);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [customKey, setCustomKey] = useState('');
-  const [showSettings, setShowSettings] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('openrouter_custom_key');
-    if (saved) setCustomKey(saved);
-  }, []);
-
-  const handleSaveKey = (val: string) => {
-    setCustomKey(val);
-    localStorage.setItem('openrouter_custom_key', val);
-  };
 
   const [data, setData] = useState<CardData>({
     nameLocal: 'ઊર્વી જયંતીભાઈ દેસાઈ',
@@ -372,64 +359,6 @@ export default function CardGeneratorPage() {
   const generateVid = () => setData((d) => ({ ...d, vid: rand16() }));
 
 
-
-  // ─── AI Generate via OpenAI ─
-  const generateFromAI = async (useFreeModel = false) => {
-    if (!customKey) {
-      alert("Please enter your OpenRouter API Key in the settings (gear icon) before generating. You can get a free key from openrouter.ai.");
-      setShowSettings(true);
-      return;
-    }
-
-    setAiLoading(true);
-    try {
-      const res = await fetch('/api/generate', { 
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-custom-key': customKey 
-        },
-        body: JSON.stringify({ useFreeModel })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        if (res.status === 401) {
-          alert(`Error: ${err.message}`);
-          setShowSettings(true);
-        } else if (res.status === 402 && !useFreeModel) {
-          if (confirm(`${err.message}\n\nWould you like to try with Qwen3 Next 80B on OpenRouter?`)) {
-            generateFromAI(true);
-            return;
-          }
-        } else if (res.status === 429) {
-          alert(`AI is busy: Too many requests across all fallback models.\n\nPrimary Model: ${err.model_attempted || 'Unknown'}\nDetails: Please wait 10-20 seconds and try again.`);
-        } else {
-          alert(`AI Error: ${err.error || res.statusText}\n\nModel attempted: ${err.model_attempted || 'Unknown'}\nDetails: ${err.details || 'No additional details'}`);
-        }
-        return;
-      }
-      const ai = await res.json();
-      setData((d) => ({
-        ...d,
-        nameLocal: ai.name_gujarati || d.nameLocal,
-        nameEnglish: ai.name_english || d.nameEnglish,
-        dob: ai.date_of_birth || d.dob,
-        gender: (ai.gender_english || 'Male').toUpperCase(),
-        genderLocal: ai.gender_gujarati || GENDER_MAP[(ai.gender_english || 'Male').toUpperCase()] || d.genderLocal,
-        idNumber: (ai.id_number || '').replace(/\D/g, '').slice(0, 12) || d.idNumber,
-        issueDate: ai.issue_date || d.issueDate,
-        addressLocal: formatAddress(ai.address_gujarati || '') || d.addressLocal,
-        addressEnglish: formatAddress(ai.address_english || '') || d.addressEnglish,
-        vid: ai.vid || rand16(),
-        updateDate: ai.update_date || d.updateDate,
-      }));
-      setPhoto(null);
-    } catch (e) {
-      alert(`AI Error: ${e instanceof Error ? e.message : 'Network error'}`);
-    } finally {
-      setAiLoading(false);
-    }
-  };
 
   // ─── Date Pickers ─
   const handleDobPick = (iso: string) => set('dob')(dateToDDMMYYYY(iso));
@@ -534,48 +463,6 @@ export default function CardGeneratorPage() {
             </div>
           </div>
           <div className="flex flex-col gap-3 w-full sm:w-auto mt-3 sm:mt-0">
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowSettings(!showSettings)}
-                className={`p-2 rounded-lg border transition-all ${showSettings ? 'bg-slate-700 border-indigo-500 text-indigo-400' : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white'}`}
-                title="Settings"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 00-1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
-              <button
-                onClick={() => generateFromAI(false)}
-                disabled={aiLoading}
-                className="flex-1 justify-center bg-purple-700/50 hover:bg-purple-600/60 text-purple-200 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 border border-purple-600/30 print:hidden disabled:opacity-50 disabled:cursor-not-allowed sm:w-auto"
-              >
-                {aiLoading ? (
-                  <>
-                    <span className="inline-block w-4 h-4 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  '🤖 AI Generate'
-                )}
-              </button>
-            </div>
-            {showSettings && (
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200">
-                <label className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-2">Personal OpenRouter API Key</label>
-                <input
-                  type="password"
-                  value={customKey}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSaveKey(e.target.value)}
-                  placeholder="sk-or-v1-..."
-                  className="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded px-2 py-1.5 focus:outline-none focus:border-indigo-500"
-                />
-                <p className="text-[9px] text-slate-500 mt-2 leading-relaxed">
-                  Provide your own key to bypass shared rate limits. 
-                  Stored locally in your browser.
-                </p>
-              </div>
-            )}
             <button
               onClick={handlePrint}
               className="w-full justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 min-h-[44px] rounded-lg transition-all flex items-center gap-1.5 print:hidden sm:w-auto"
