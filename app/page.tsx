@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -250,29 +250,6 @@ const ddmmyyyyToISO = (ddmm: string) => {
   const parts = ddmm.split('/');
   if (parts.length !== 3) return '';
   return `${parts[2]}-${parts[1]}-${parts[0]}`;
-};
-
-// ─── Address Formatter (2-3 lines max) ───────────────────────────────────────
-const formatAddress = (addr: string): string => {
-  if (!addr) return '';
-  // Remove any existing newlines, normalize
-  const flat = addr.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-  const parts = flat.split(', ');
-  if (parts.length <= 2) return flat;
-
-  // Group into 2-3 lines of ~40 chars each
-  const lines: string[] = [];
-  let current = '';
-  for (const part of parts) {
-    if (current && (current + ', ' + part).length > 40) {
-      lines.push(current);
-      current = part;
-    } else {
-      current = current ? current + ', ' + part : part;
-    }
-  }
-  if (current) lines.push(current);
-  return lines.slice(0, 3).join('\n');
 };
 
 // ─── Field Input ──────────────────────────────────────────────────────────────
