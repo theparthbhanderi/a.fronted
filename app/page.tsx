@@ -97,12 +97,12 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
         </div>
 
         {/* DOB */}
-        <div style={{ fontSize: 11.5, color: '#000', marginTop: 3, lineHeight: 1.3 }}>
-          <span style={{ fontWeight: 'normal', fontFamily: 'Arial, sans-serif' }}>જન્મ તારીખ/DOB: </span>
-          <span style={{ fontWeight: 'normal', fontFamily: 'Arial, sans-serif' }}>{data.dob}</span>
+        <div style={{ fontSize: 11.5, color: '#000', marginTop: 3, lineHeight: 1.3, fontFamily: '"Times New Roman", Times, serif' }}>
+          <span style={{ fontWeight: 'normal' }}>જન્મ તારીખ/DOB: </span>
+          <span style={{ fontWeight: 'normal' }}>{data.dob}</span>
         </div>
         {/* Gender */}
-        <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: 'Arial, sans-serif', lineHeight: 1.3 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.3 }}>
           {data.genderLocal}/ {data.gender}
         </div>
 
@@ -202,11 +202,11 @@ const BackCard = ({ data }: { data: CardData }) => (
           </div>
 
           {/* English address label */}
-          <div style={{ fontSize: 12, fontWeight: 'normal', color: '#000', marginTop: 6, fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
+          <div style={{ fontSize: 12, fontWeight: 'normal', color: '#000', marginTop: 6, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.2 }}>
             Address:
           </div>
           {/* English address text */}
-          <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', lineHeight: 1.3, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
+          <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', lineHeight: 1.3, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: '"Times New Roman", Times, serif' }}>
             {data.addressEnglish}
           </div>
         </div>

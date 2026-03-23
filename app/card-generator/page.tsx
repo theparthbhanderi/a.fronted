@@ -89,10 +89,10 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                 <div style={{ fontSize: 13.5, fontWeight: 'bold', color: '#000' }}>{data.nameLocal}</div>
                 <div style={{ fontSize: 13.5, color: '#000', marginTop: 1 }}>{data.nameEnglish}</div>
 
-                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 3 }}>
+                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 3, fontFamily: '"Times New Roman", Times, serif' }}>
                     જન્મ તારીખ/DOB: <span style={{ fontWeight: 'normal' }}>{data.dob}</span>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif' }}>
                     {data.genderLocal}/ <span style={{ fontWeight: 'normal' }}>{data.gender}</span>
                 </div>
 
@@ -179,8 +179,8 @@ const BackCard = ({ data }: { data: CardData }) => (
                         {data.addressLocal}
                     </div>
 
-                    <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 6 }}>Address:</div>
-                    <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 6, fontFamily: '"Times New Roman", Times, serif' }}>Address:</div>
+                    <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: '"Times New Roman", Times, serif' }}>
                         {data.addressEnglish}
                     </div>
                 </div>
@@ -385,20 +385,20 @@ export default function CardGeneratorPage() {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-6 sm:gap-8 relative">
-        {/* ─── Left: Input Form ─── */}
-        <div className="flex flex-col space-y-6">
+                {/* ─── Left: Input Form ─── */}
+                <div className="flex flex-col space-y-6">
                     {/* Premium Mobile Preview (Segmented Control) */}
                     <div className="xl:hidden flex flex-col gap-4 bg-slate-800/60 backdrop-blur-md p-4 rounded-2xl border border-slate-700/50 shadow-2xl">
                         <div className="flex items-center justify-between">
                             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Preview</h2>
                             <div className="flex bg-slate-900 p-1 rounded-lg border border-slate-700">
-                                <button 
+                                <button
                                     onClick={() => setActiveTab('front')}
                                     className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'front' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     Front
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => setActiveTab('back')}
                                     className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'back' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                                 >
@@ -406,7 +406,7 @@ export default function CardGeneratorPage() {
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div className="flex flex-col items-center justify-center min-h-[220px]">
                             {activeTab === 'front' ? (
                                 <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }} className="transition-all duration-300">
@@ -449,7 +449,7 @@ export default function CardGeneratorPage() {
                                 <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
                                 Front Card Details
                             </h2>
-                            <button 
+                            <button
                                 onClick={() => setAutoTranslate(!autoTranslate)}
                                 className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all ${autoTranslate ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-900 border-slate-700 text-slate-500'}`}
                             >
@@ -458,13 +458,13 @@ export default function CardGeneratorPage() {
                             </button>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <Field 
-                                label="Name (English)" 
-                                value={data.nameEnglish} 
+                            <Field
+                                label="Name (English)"
+                                value={data.nameEnglish}
                                 onChange={(v) => {
                                     set('nameEnglish')(v);
                                     if (autoTranslate) transliterate(v, 'name');
-                                }} 
+                                }}
                             />
                             <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} />
                             <Field label="Date of Birth" value={data.dob} onChange={set('dob')} />
@@ -493,14 +493,14 @@ export default function CardGeneratorPage() {
                             Back Card Details
                         </h2>
                         <div className="grid grid-cols-1 gap-3">
-                            <Field 
-                                label="Address (English)" 
-                                value={data.addressEnglish} 
+                            <Field
+                                label="Address (English)"
+                                value={data.addressEnglish}
                                 onChange={(v) => {
                                     set('addressEnglish')(v);
                                     if (autoTranslate) transliterate(v, 'address');
-                                }} 
-                                isTextArea 
+                                }}
+                                isTextArea
                             />
                             <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
                             <Field label="16-Digit Virtual ID (VID)" value={data.vid} onChange={set('vid')} />
@@ -517,9 +517,9 @@ export default function CardGeneratorPage() {
                                     <ActionBtn onClick={generateUpdateDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
                 <div className="hidden xl:flex flex-col gap-5 items-start sticky top-24 self-start">
                     <div className="flex items-center justify-between w-full">
@@ -527,7 +527,7 @@ export default function CardGeneratorPage() {
                             <h2 className="text-sm font-bold text-white">Live Preview</h2>
                             <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">Perfect Ditto</span>
                         </div>
-                        <button 
+                        <button
                             onClick={() => setIsDownloadModalOpen(true)}
                             className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-white transition-colors flex items-center gap-1.5"
                         >
@@ -579,7 +579,7 @@ export default function CardGeneratorPage() {
             {/* ─── Download Selection Modal ─── */}
             {isDownloadModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div 
+                    <div
                         className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
                         onClick={() => !isDownloading && setIsDownloadModalOpen(false)}
                     />
@@ -588,9 +588,9 @@ export default function CardGeneratorPage() {
                             <h3 className="text-xl font-bold text-white">Download Card</h3>
                             <p className="text-sm text-slate-400 mt-1">Select card side for HQ PNG export</p>
                         </div>
-                        
+
                         <div className="p-4 grid grid-cols-1 gap-3">
-                            <button 
+                            <button
                                 onClick={() => handleDownload('front')}
                                 disabled={isDownloading}
                                 className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-indigo-600/20 border border-slate-700 hover:border-indigo-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
@@ -611,7 +611,7 @@ export default function CardGeneratorPage() {
                                 </div>
                             </button>
 
-                            <button 
+                            <button
                                 onClick={() => handleDownload('back')}
                                 disabled={isDownloading}
                                 className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-emerald-600/20 border border-slate-700 hover:border-emerald-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
@@ -633,7 +633,7 @@ export default function CardGeneratorPage() {
                             </button>
                         </div>
 
-                        <button 
+                        <button
                             onClick={() => setIsDownloadModalOpen(false)}
                             disabled={isDownloading}
                             className="w-full py-4 text-sm font-bold text-slate-500 hover:text-white transition-colors bg-slate-900/50"
