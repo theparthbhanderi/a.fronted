@@ -696,7 +696,7 @@ export default function CardGeneratorPage() {
               {/* DOB — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
-                <div className="grid grid-cols-[1fr_90px_auto] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_135px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.dob}
@@ -759,7 +759,7 @@ export default function CardGeneratorPage() {
               {/* Issue Date — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
-                <div className="grid grid-cols-[1fr_90px_auto] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_135px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.issueDate}
@@ -815,7 +815,7 @@ export default function CardGeneratorPage() {
               {/* Update Date — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
-                <div className="grid grid-cols-[1fr_90px_auto] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_135px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.updateDate}
