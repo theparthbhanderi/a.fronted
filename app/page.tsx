@@ -697,21 +697,21 @@ export default function CardGeneratorPage() {
               {/* DOB — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
-                <div className="grid grid-cols-[1fr_135px_auto] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_135px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.dob}
                     onChange={(e) => set('dob')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className={`w-full bg-slate-800/70 border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
+                    className={`w-full bg-slate-800/70 border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 order-1 ${dobError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.dob)}
                     onChange={(e) => handleDobPick(e.target.value)}
-                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="w-full col-span-2 sm:col-span-1 bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert order-3 sm:order-2"
                   />
-                  <ActionBtn onClick={generateDob} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
+                  <ActionBtn onClick={generateDob} className="min-h-[44px] px-3 sm:px-4 text-[10px] sm:text-xs order-2 sm:order-3">🎲 Gen</ActionBtn>
                 </div>
                 {dobError && <span className="text-xs text-red-400">{dobError}</span>}
               </div>
@@ -760,21 +760,21 @@ export default function CardGeneratorPage() {
               {/* Issue Date — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
-                <div className="grid grid-cols-[1fr_135px_auto] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_135px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.issueDate}
                     onChange={(e) => set('issueDate')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 order-1"
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.issueDate)}
                     onChange={(e) => handleIssueDatePick(e.target.value)}
-                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="w-full col-span-2 sm:col-span-1 bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert order-3 sm:order-2"
                   />
-                  <ActionBtn onClick={generateIssueDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
+                  <ActionBtn onClick={generateIssueDate} className="min-h-[44px] px-3 sm:px-4 text-[10px] sm:text-xs order-2 sm:order-3">🎲 Gen</ActionBtn>
                 </div>
               </div>
             </div>
@@ -816,21 +816,21 @@ export default function CardGeneratorPage() {
               {/* Update Date — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
-                <div className="grid grid-cols-[1fr_135px_auto] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_135px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.updateDate}
                     onChange={(e) => set('updateDate')(e.target.value)}
                     placeholder="DD/MM/YYYY"
-                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 order-1"
                   />
                   <input
                     type="date"
                     value={ddmmyyyyToISO(data.updateDate)}
                     onChange={(e) => handleUpdateDatePick(e.target.value)}
-                    className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+                    className="w-full col-span-2 sm:col-span-1 bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert order-3 sm:order-2"
                   />
-                  <ActionBtn onClick={generateUpdateDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
+                  <ActionBtn onClick={generateUpdateDate} className="min-h-[44px] px-3 sm:px-4 text-[10px] sm:text-xs order-2 sm:order-3">🎲 Gen</ActionBtn>
                 </div>
               </div>
             </div>
