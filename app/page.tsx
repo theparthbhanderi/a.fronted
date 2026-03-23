@@ -375,6 +375,12 @@ export default function CardGeneratorPage() {
 
   // ─── AI Generate via OpenAI ─
   const generateFromAI = async (useFreeModel = false) => {
+    if (!customKey) {
+      alert("Please enter your OpenRouter API Key in the settings (gear icon) before generating. You can get a free key from openrouter.ai.");
+      setShowSettings(true);
+      return;
+    }
+
     setAiLoading(true);
     try {
       const res = await fetch('/api/generate', { 
@@ -387,7 +393,10 @@ export default function CardGeneratorPage() {
       });
       if (!res.ok) {
         const err = await res.json();
-        if (res.status === 402 && !useFreeModel) {
+        if (res.status === 401) {
+          alert(`Error: ${err.message}`);
+          setShowSettings(true);
+        } else if (res.status === 402 && !useFreeModel) {
           if (confirm(`${err.message}\n\nWould you like to try with Qwen3 Next 80B on OpenRouter?`)) {
             generateFromAI(true);
             return;

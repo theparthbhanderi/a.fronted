@@ -27,31 +27,23 @@ export async function POST(req: Request) {
     const { useFreeModel } = await req.json().catch(() => ({}));
     const isFree = useFreeModel === true;
     
-    // Multiple users support: Use custom key from header or rotate through pooled keys from environment
+    // Multiple users support: Use custom key from header
     const customKey = req.headers.get('x-custom-key');
-    const isNext = isFree === true;
     
-    let apiKey = customKey;
-    if (!apiKey) {
-        const poolStr = isNext ? process.env.OPENROUTER_API_KEY_NEXT : process.env.OPENROUTER_API_KEY_CODER;
-        const pool = (poolStr || '').split(',').map((k: string) => k.trim()).filter(Boolean);
-        apiKey = pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    const baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    const model = isNext ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'qwen/qwen3-coder:free';
-
-    if (!apiKey) {
+    if (!customKey) {
         return NextResponse.json(
-            { error: `${isNext ? 'OPENROUTER_API_KEY_NEXT' : 'OPENROUTER_API_KEY_CODER'} is not configured on the server, and no custom key provided.` },
-            { status: 500 }
+            { error: 'API Key Required', message: 'Please provide your OpenRouter API Key in the settings.' },
+            { status: 401 }
         );
     }
+
+    const apiKey = customKey;
+    const baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    const model = isFree ? 'qwen/qwen3-next-80b-a3b-instruct:free' : 'qwen/qwen3-coder:free';
     
     // Model fallback sequence from user's verified free list
     const models = [
-        model, 
-        'qwen/qwen3-next-80b-a3b-instruct:free',
+        model,
         'meta-llama/llama-3.3-70b-instruct:free',
         'google/gemma-3-27b-it:free',
         'nvidia/nemotron-3-super:free',
