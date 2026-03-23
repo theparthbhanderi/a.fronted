@@ -3,7 +3,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeCanvas } from 'qrcode.react';
-import { toBlob } from 'html-to-image';
+import html2canvas from 'html2canvas';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface CardData {
@@ -386,37 +386,50 @@ export default function CardGeneratorPage() {
   const handleDownload = async (side: 'front' | 'back') => {
     const id = side === 'front' ? 'aadhaar-front' : 'aadhaar-back';
     const element = document.getElementById(id);
-    if (!element) return;
+    if (!element) {
+      alert('Error: Card element not found (' + id + ')');
+      return;
+    }
 
     setIsDownloading(true);
     try {
-      const blob = await toBlob(element, {
-        pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
+      // Use html2canvas for better mobile support as html-to-image is failing "Zero KB" on some browsers
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
         backgroundColor: '#ffffff',
-        cacheBust: true,
+        logging: false,
+        allowTaint: true,
       });
 
-      if (!blob) return;
-      const dataUrl = window.URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = dataUrl;
-      link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
-      
-      document.body.appendChild(link);
-      link.click();
-      
-      // Small delay before cleanup for mobile browser reliability
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(dataUrl);
-      }, 400);
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          alert('Error: Failed to generate image blob');
+          setIsDownloading(false);
+          return;
+        }
+        
+        const dataUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = dataUrl;
+        link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
+        
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(dataUrl);
+        }, 400);
 
-      setIsDownloadModalOpen(false);
+        setIsDownloadModalOpen(false);
+        setIsDownloading(false);
+      }, 'image/png', 1.0);
+
     } catch (err) {
       console.error('Download failed', err);
-    } finally {
+      alert('Download failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
       setIsDownloading(false);
     }
   };
