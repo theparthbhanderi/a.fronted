@@ -88,21 +88,21 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
       {/* Right col: identity details */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: 14, paddingTop: 2 }}>
         {/* Gujarati name */}
-        <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.25 }}>
+        <div style={{ fontSize: 12.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.25 }}>
           {data.nameLocal}
         </div>
         {/* English name */}
-        <div style={{ fontSize: 10.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.25 }}>
+        <div style={{ fontSize: 13, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.25 }}>
           {data.nameEnglish}
         </div>
 
         {/* DOB */}
-        <div style={{ fontSize: 9.5, color: '#000', marginTop: 2, lineHeight: 1.3 }}>
+        <div style={{ fontSize: 11.5, color: '#000', marginTop: 3, lineHeight: 1.3 }}>
           <span style={{ fontWeight: 'normal', fontFamily: 'Arial, sans-serif' }}>જન્મ તારીખ/DOB: </span>
           <span style={{ fontWeight: 'normal', fontFamily: 'Arial, sans-serif' }}>{data.dob}</span>
         </div>
         {/* Gender */}
-        <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: 'Arial, sans-serif', lineHeight: 1.3 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: 'Arial, sans-serif', lineHeight: 1.3 }}>
           {data.genderLocal}/ {data.gender}
         </div>
 
@@ -193,20 +193,20 @@ const BackCard = ({ data }: { data: CardData }) => (
         {/* Address content */}
         <div style={{ flex: 1, paddingTop: 3 }}>
           {/* Gujarati address label */}
-          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
+          <div style={{ fontSize: 12, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
             સરનામું :
           </div>
           {/* Gujarati address text */}
-          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', lineHeight: 1.35, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
+          <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', lineHeight: 1.3, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
             {data.addressLocal}
           </div>
 
           {/* English address label */}
-          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', marginTop: 5, fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
+          <div style={{ fontSize: 12, fontWeight: 'normal', color: '#000', marginTop: 6, fontFamily: 'Arial, sans-serif', lineHeight: 1.2 }}>
             Address:
           </div>
           {/* English address text */}
-          <div style={{ fontSize: 9.5, fontWeight: 'normal', color: '#000', lineHeight: 1.35, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
+          <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', lineHeight: 1.3, paddingRight: 4, whiteSpace: 'pre-wrap', fontFamily: 'Arial, sans-serif' }}>
             {data.addressEnglish}
           </div>
         </div>

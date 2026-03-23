@@ -86,13 +86,13 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
 
             {/* Right col: details */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: 12, paddingTop: 1 }}>
-                <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000' }}>{data.nameLocal}</div>
-                <div style={{ fontSize: 11.5, color: '#000', marginTop: 1 }}>{data.nameEnglish}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 'bold', color: '#000' }}>{data.nameLocal}</div>
+                <div style={{ fontSize: 13.5, color: '#000', marginTop: 1 }}>{data.nameEnglish}</div>
 
-                <div style={{ fontSize: 11, fontWeight: 'bold', color: '#000', marginTop: 3 }}>
+                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 3 }}>
                     જન્મ તારીખ/DOB: <span style={{ fontWeight: 'normal' }}>{data.dob}</span>
                 </div>
-                <div style={{ fontSize: 11, fontWeight: 'bold', color: '#000', marginTop: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 1 }}>
                     {data.genderLocal}/ <span style={{ fontWeight: 'normal' }}>{data.gender}</span>
                 </div>
 
@@ -174,13 +174,13 @@ const BackCard = ({ data }: { data: CardData }) => (
                     Details as on: {data.updateDate}
                 </div>
                 <div style={{ flex: 1, paddingTop: 2, overflow: 'hidden' }}>
-                    <div style={{ fontSize: 10.5, fontWeight: 'bold', color: '#000' }}>સરનામું :</div>
-                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000' }}>સરનામું :</div>
+                    <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {data.addressLocal}
                     </div>
 
-                    <div style={{ fontSize: 10.5, fontWeight: 'bold', color: '#000', marginTop: 6 }}>Address:</div>
-                    <div style={{ fontSize: 10.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 6 }}>Address:</div>
+                    <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {data.addressEnglish}
                     </div>
                 </div>
