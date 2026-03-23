@@ -36,12 +36,16 @@ const DynamicQRCode = ({ data }: { data: CardData }) => {
     const cleanAddressInfo = data.addressEnglish.replace(/\n/g, ', ');
     const yearOfBirth = data.dob.split('/').pop() || data.dob;
 
-    // Construct Aadhaar-style XML string using form data - expanded for density
-    const qrString = `<?xml version="1.0" encoding="UTF-8"?><PrintLetterBarcodeData uid="${data.idNumber.replace(/\D/g, '')}" name="${data.nameEnglish}" gender="${data.gender.charAt(0).toUpperCase()}" yob="${yearOfBirth}" co="${data.nameEnglish}" house="" street="" lm="" loc="" vtc="" dist="Anand" state="Gujarat" pc="364505" dob="${data.dob}" address="${cleanAddressInfo}" />`;
+    // Standard Aadhaar QR data + high-density signature payload to match official scan complexity
+    const signature = "MIIEPgYJKoZIhvcNAQcCoIIELzCCBysCAQExADALBgkqhkiG9w0BBwGgggSVMIIDkTCCAnmgAwIBAgIIYmJSUWqT1jkwDQYJKoZIhvcNAQEFBQAwRTELMAkGA1UEBhMCSU4xEDAOBgNVBAoTBzQzM2QwZDEwO" + 
+                      "SDAuBgNVBAsTJ0NlcnRpZmljYXRpb24gQXV0aG9yaXR5IEluZGlhIChDQUktVUlEQUkpMRYwFAYDVQQDEw1VSURBSSBDQS0yMDE0MB4XDTE0MDEyMzA3NDUzOFoXDTI0MDEyMTE3NDUzOFowRTELMAkGA1UEBhMCSU4x" + 
+                      "EDAOBgNVBAoTBzQzM2QwZDEwO";
+
+    const qrString = `<?xml version="1.0" encoding="UTF-8"?><PrintLetterBarcodeData uid="${data.idNumber.replace(/\D/g, '')}" name="${data.nameEnglish}" gender="${data.gender.charAt(0).toUpperCase()}" yob="${yearOfBirth}" co="${data.nameEnglish}" house="" street="" lm="" loc="" vtc="" dist="Anand" state="Gujarat" pc="364505" dob="${data.dob}" address="${cleanAddressInfo}" signature="${signature}" />`;
 
     return (
-        <div style={{ width: 135, height: 135, background: '#fff', padding: 2, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <QRCodeSVG value={qrString} size={130} level="M" includeMargin={false} />
+        <div style={{ width: 140, height: 140, background: '#fff', padding: 2, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <QRCodeSVG value={qrString} size={138} level="H" includeMargin={false} />
         </div>
     );
 };
@@ -174,8 +178,8 @@ const BackCard = ({ data }: { data: CardData }) => (
                     Details as on: {data.updateDate}
                 </div>
                 <div style={{ flex: 1, paddingTop: 2, overflow: 'hidden' }}>
-                    <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000' }}>સરનામું :</div>
-                    <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                    <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000', fontFamily: '"Times New Roman", Times, serif' }}>સરનામું :</div>
+                    <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: '"Times New Roman", Times, serif' }}>
                         {data.addressLocal}
                     </div>
 
@@ -186,8 +190,8 @@ const BackCard = ({ data }: { data: CardData }) => (
                 </div>
             </div>
 
-            {/* Right: QR */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 2, flexShrink: 0 }}>
+            {/* Right: QR - Shifted left & down slightly */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: 8, paddingRight: 8, flexShrink: 0 }}>
                 <DynamicQRCode data={data} />
             </div>
         </div>
