@@ -59,7 +59,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
     />
 
     {/* ── Body Area ── */}
-    <div style={{ display: 'flex', padding: '4px 12px 0 15px', flex: 1 }}>
+    <div style={{ display: 'flex', padding: '4px 12px 0 20px', flex: 1 }}>
 
       {/* Left col: vertical issue-date text + photo */}
       <div style={{ display: 'flex', gap: 3, alignItems: 'flex-start', flexShrink: 0 }}>
