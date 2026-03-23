@@ -102,16 +102,29 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                     padding: '3px 4px',
                     marginTop: 4,
                     width: '100%',
-                    boxSizing: 'border-box',
-                    textAlign: 'justify'
+                    boxSizing: 'border-box'
                 }}>
-                    <div style={{ fontSize: 10, color: '#000', lineHeight: 1.2, fontFamily: 'Arial, sans-serif' }}>
-                        <span style={{ fontWeight: 'bold' }}>આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.</span>
-                        <span> તેનો ઉપયોગ માત્ર ચકાસણી (ઓનલાઇન પ્રમાણીકરણ અથવા ક્યુઆર કોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.</span>
+                    <div style={{ fontSize: 9.8, color: '#000', lineHeight: 1.25, fontFamily: 'Arial, sans-serif' }}>
+                        <div style={{ textAlign: 'justify', textAlignLast: 'justify', fontWeight: 'bold' }}>
+                            આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.
+                        </div>
+                        <div style={{ textAlign: 'justify', textAlignLast: 'justify' }}>
+                            તેનો ઉપયોગ માત્ર ચકાસણી (ઓનલાઇન પ્રમાણીકરણ અથવા ક્યુઆર
+                        </div>
+                        <div style={{ textAlign: 'left' }}>
+                            કોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.
+                        </div>
                     </div>
-                    <div style={{ fontSize: 10, color: '#000', lineHeight: 1.2, marginTop: 3, fontFamily: 'Arial, sans-serif' }}>
-                        <span style={{ fontWeight: 'bold' }}>Aadhaar is proof of identity, not of citizenship or date of birth.</span>
-                        <span> It should be used with verification (online authentication, or scanning of QR code / offline XML).</span>
+                    <div style={{ fontSize: 9.8, color: '#000', lineHeight: 1.25, marginTop: 2, fontFamily: 'Arial, sans-serif' }}>
+                        <div style={{ textAlign: 'justify', textAlignLast: 'justify', fontWeight: 'bold' }}>
+                            Aadhaar is proof of identity, not of citizenship
+                        </div>
+                        <div style={{ textAlign: 'justify', textAlignLast: 'justify' }}>
+                            or date of birth. It should be used with verification (online
+                        </div>
+                        <div style={{ textAlign: 'left' }}>
+                            authentication, or scanning of QR code / offline XML).
+                        </div>
                     </div>
                 </div>
             </div>
