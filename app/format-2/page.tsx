@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { toJpeg } from 'html-to-image';
+import { toJpeg, toBlob } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
 import { Roboto_Condensed, Roboto_Mono, Great_Vibes } from 'next/font/google';
 
@@ -288,24 +288,21 @@ export default function PanGeneratorPage() {
     if (!el) return;
     setIsDownloading(true);
     try {
-      // Small delay to ensure all assets (fonts, background) are fully painted
-      await new Promise(r => setTimeout(r, 200));
+      // Small pause to ensure UI is ready
+      await new Promise(r => setTimeout(r, 100));
       
-      const blob = await toJpeg(el, { 
-        quality: 0.95, 
-        pixelRatio: 3, 
+      const blob = await toBlob(el, { 
+        pixelRatio: 2, 
         backgroundColor: '#fff', 
         cacheBust: true,
-        style: {
-          transform: 'scale(1)',
-          transformOrigin: 'top left'
-        }
-      }).then(dataUrl => fetch(dataUrl).then(res => res.blob()));
+      });
+
+      if (!blob) throw new Error('Failed to generate image blob');
 
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `PAN-${data.panNumber}.jpeg`;
+      a.download = `PAN-${data.panNumber}.png`;
       document.body.appendChild(a);
       a.click();
       
