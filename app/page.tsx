@@ -298,6 +298,21 @@ export default function CardGeneratorPage() {
   const [showToast, setShowToast] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
+  const [autoTranslate, setAutoTranslate] = useState(true);
+
+  // ─── Transliteration Helper ───
+  const transliterate = async (text: string, field: 'name' | 'address') => {
+    if (!text || !autoTranslate) return;
+    try {
+      const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
+      const json = await res.json();
+      if (json[0] === 'SUCCESS' && json[1]?.[0]?.[1]?.[0]) {
+        const translated = json[1][0][1][0];
+        if (field === 'name') setData(d => ({ ...d, nameLocal: translated }));
+        else setData(d => ({ ...d, addressLocal: translated }));
+      }
+    } catch (e) { console.error('Transliteration failed', e); }
+  };
 
   const [data, setData] = useState<CardData>({
     nameLocal: 'ઊર્વી જયંતીભાઈ દેસાઈ',
@@ -545,14 +560,31 @@ export default function CardGeneratorPage() {
 
           {/* ── Front Card Details ── */}
           <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4">
-            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-              <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
-              Front Card Details
-            </h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
+                Front Card Details
+              </h2>
+              <button 
+                onClick={() => setAutoTranslate(!autoTranslate)}
+                className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all ${autoTranslate ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-500'}`}
+              >
+                <div className={`w-2 h-2 rounded-full ${autoTranslate ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                <span className="text-[10px] font-bold uppercase tracking-wider">{autoTranslate ? 'Auto-Translate ON' : 'Manual Mode'}</span>
+              </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Names */}
+              <Field 
+                label="Name (English)" 
+                value={data.nameEnglish} 
+                onChange={(v) => {
+                  set('nameEnglish')(v);
+                  if (autoTranslate) transliterate(v, 'name');
+                }} 
+                error={nameEnError} 
+              />
               <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} error={nameGuError} />
-              <Field label="Name (English)" value={data.nameEnglish} onChange={set('nameEnglish')} error={nameEnError} />
 
               {/* DOB — Date Picker */}
               <div className="flex flex-col space-y-2">
@@ -645,8 +677,16 @@ export default function CardGeneratorPage() {
               Back Card Details
             </h2>
             <div className="grid grid-cols-1 gap-4">
+              <Field 
+                label="Address (English)" 
+                value={data.addressEnglish} 
+                onChange={(v) => {
+                  set('addressEnglish')(v);
+                  if (autoTranslate) transliterate(v, 'address');
+                }} 
+                isTextArea 
+              />
               <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
-              <Field label="Address (English)" value={data.addressEnglish} onChange={set('addressEnglish')} isTextArea />
 
               {/* VID with Generate */}
               <div className="flex flex-col space-y-2">

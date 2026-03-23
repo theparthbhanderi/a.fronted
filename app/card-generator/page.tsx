@@ -233,6 +233,7 @@ const Field = ({
 export default function CardGeneratorPage() {
     const [photo, setPhoto] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'front' | 'back'>('front');
+    const [autoTranslate, setAutoTranslate] = useState(true);
 
     // Default PDF Data - Exact Match
     const [data, setData] = useState<CardData>({
@@ -249,6 +250,19 @@ export default function CardGeneratorPage() {
         vid: '9110500614285534',
         updateDate: '14/11/2025',
     });
+
+    const transliterate = async (text: string, field: 'name' | 'address') => {
+        if (!text || !autoTranslate) return;
+        try {
+            const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
+            const json = await res.json();
+            if (json[0] === 'SUCCESS' && json[1]?.[0]?.[1]?.[0]) {
+                const translated = json[1][0][1][0];
+                if (field === 'name') setData(d => ({ ...d, nameLocal: translated }));
+                else setData(d => ({ ...d, addressLocal: translated }));
+            }
+        } catch (e) { console.error('Transliteration failed', e); }
+    };
 
     const previewRef = useRef<HTMLDivElement>(null);
     const set = (k: keyof CardData) => (v: string) => setData((d) => ({ ...d, [k]: v }));
@@ -369,13 +383,29 @@ export default function CardGeneratorPage() {
                     </div>
 
                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-                        <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                            <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
-                            Front Card Details
-                        </h2>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                                <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
+                                Front Card Details
+                            </h2>
+                            <button 
+                                onClick={() => setAutoTranslate(!autoTranslate)}
+                                className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all ${autoTranslate ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-900 border-slate-700 text-slate-500'}`}
+                            >
+                                <div className={`w-2 h-2 rounded-full ${autoTranslate ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">{autoTranslate ? 'Auto-Translate ON' : 'Manual Mode'}</span>
+                            </button>
+                        </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <Field 
+                                label="Name (English)" 
+                                value={data.nameEnglish} 
+                                onChange={(v) => {
+                                    set('nameEnglish')(v);
+                                    if (autoTranslate) transliterate(v, 'name');
+                                }} 
+                            />
                             <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} />
-                            <Field label="Name (English)" value={data.nameEnglish} onChange={set('nameEnglish')} />
                             <Field label="Date of Birth" value={data.dob} onChange={set('dob')} />
                             <Field label="Gender" value={data.gender} onChange={set('gender')} />
                             <Field label="Gender (Gujarati)" value={data.genderLocal} onChange={set('genderLocal')} />
@@ -390,8 +420,16 @@ export default function CardGeneratorPage() {
                             Back Card Details
                         </h2>
                         <div className="grid grid-cols-1 gap-3">
+                            <Field 
+                                label="Address (English)" 
+                                value={data.addressEnglish} 
+                                onChange={(v) => {
+                                    set('addressEnglish')(v);
+                                    if (autoTranslate) transliterate(v, 'address');
+                                }} 
+                                isTextArea 
+                            />
                             <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
-                            <Field label="Address (English)" value={data.addressEnglish} onChange={set('addressEnglish')} isTextArea />
                             <Field label="16-Digit Virtual ID (VID)" value={data.vid} onChange={set('vid')} />
                             <Field label="Last Updated Date" value={data.updateDate} onChange={set('updateDate')} />
                     </div>
