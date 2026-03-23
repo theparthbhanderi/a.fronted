@@ -23,7 +23,7 @@ const PanCard = ({ data, photoSrc, signatureSrc }: { data: PanData, photoSrc: st
       id="pan-card"
       style={{
         width: 420, height: 265, position: 'relative', overflow: 'hidden',
-        fontFamily: '"Times New Roman", Times, serif',
+        fontFamily: 'Arial, Helvetica, sans-serif',
         filter: 'contrast(0.98) brightness(0.98)'
       }}
       className="bg-white rounded-[6px] shadow-sm select-none"
@@ -46,7 +46,7 @@ const PanCard = ({ data, photoSrc, signatureSrc }: { data: PanData, photoSrc: st
       <div style={{ position: 'relative', width: '100%', height: '100%', zIndex: 10 }}>
           
           {/* Top Center: PAN Number */}
-          <div style={{ position: 'absolute', top: 100, left: 132, width: 156, textAlign: 'center', fontSize: 18, fontWeight: 'bold', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: 0.8, color: '#000' }}>
+          <div style={{ position: 'absolute', top: 107, left: 132, width: 156, textAlign: 'center', fontSize: 17.5, fontWeight: 'bold', fontFamily: 'Arial, sans-serif', letterSpacing: 0.5, color: '#000' }}>
               {data.panNumber}
           </div>
 
@@ -56,37 +56,37 @@ const PanCard = ({ data, photoSrc, signatureSrc }: { data: PanData, photoSrc: st
                  src={photoSrc} 
                  alt="Photo"
                  style={{ 
-                     position: 'absolute', top: 76, left: 24, width: 73, height: 95, 
+                     position: 'absolute', top: 61, left: 24, width: 85, height: 106, 
                      objectFit: 'cover', filter: 'contrast(0.95) saturate(0.9)',
                      border: '1px solid #777'
                  }} 
               />
           ) : (
-              <div style={{ position: 'absolute', top: 76, left: 24, width: 73, height: 95, background: 'rgba(0,0,0,0.05)', border: '1px solid #ddd' }} />
+              <div style={{ position: 'absolute', top: 61, left: 24, width: 85, height: 106, background: 'rgba(0,0,0,0.05)', border: '1px solid #ddd' }} />
           )}
 
           {/* Left Side: Full Name */}
-          <div style={{ position: 'absolute', top: 151, left: 24, fontSize: 13.5, fontWeight: 'bold', letterSpacing: 0.3, color: '#000', textTransform: 'uppercase', fontFamily: '"Arial", sans-serif' }}>
+          <div style={{ position: 'absolute', top: 168, left: 24, fontSize: 12.5, fontWeight: 'bold', letterSpacing: 0.1, color: '#000', textTransform: 'uppercase' }}>
               {data.name}
           </div>
 
           {/* Left Side: Father's Name */}
-          <div style={{ position: 'absolute', top: 184, left: 24, fontSize: 13.5, fontWeight: 'bold', letterSpacing: 0.3, color: '#000', textTransform: 'uppercase', fontFamily: '"Arial", sans-serif' }}>
+          <div style={{ position: 'absolute', top: 202, left: 24, fontSize: 12.5, fontWeight: 'bold', letterSpacing: 0.1, color: '#000', textTransform: 'uppercase' }}>
               {data.fatherName}
           </div>
 
           {/* Left Side: DOB */}
-          <div style={{ position: 'absolute', top: 228, left: 24, fontSize: 13.5, fontWeight: 'bold', letterSpacing: 0.3, color: '#000', fontFamily: '"Arial", sans-serif' }}>
+          <div style={{ position: 'absolute', top: 247, left: 24, fontSize: 13, fontWeight: 'bold', letterSpacing: 0.3, color: '#000' }}>
               {data.dob}
           </div>
 
           {/* Right Side: QR Code Box */}
-          <div style={{ position: 'absolute', top: 75, right: 26, width: 95, height: 95, background: '#fff', border: '1px solid #777', padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <QRCodeSVG value={qrData} size={91} level="H" includeMargin={false} />
+          <div style={{ position: 'absolute', top: 61, right: 20, width: 100, height: 100, background: '#fff', border: '1px solid #777', padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <QRCodeSVG value={qrData} size={96} level="H" includeMargin={false} />
           </div>
 
           {/* Info Text Right Side (Vertical Date) */}
-          <div style={{ position: 'absolute', top: 185, right: 26, fontSize: 10, alignSelf: 'center', color: '#000', letterSpacing: 0.5 }}>
+          <div style={{ position: 'absolute', top: 232, right: 20, fontSize: 10.5, color: '#000', fontFamily: 'Arial, sans-serif' }}>
              05082023
           </div>
 
@@ -95,10 +95,10 @@ const PanCard = ({ data, photoSrc, signatureSrc }: { data: PanData, photoSrc: st
               <img 
                  src={signatureSrc} 
                  alt="Signature"
-                 style={{ position: 'absolute', top: 215, left: 150, width: 100, height: 35, objectFit: 'contain' }} 
+                 style={{ position: 'absolute', top: 215, left: 160, width: 100, height: 35, objectFit: 'contain' }} 
               />
           ) : (
-              <div style={{ position: 'absolute', top: 215, left: 150, width: 100, height: 35, background: 'rgba(0,0,0,0.02)' }} />
+              <div style={{ position: 'absolute', top: 215, left: 160, width: 100, height: 35, background: 'rgba(0,0,0,0.02)' }} />
           )}
       </div>
     </div>
