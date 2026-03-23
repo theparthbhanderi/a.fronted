@@ -533,29 +533,6 @@ export default function CardGeneratorPage() {
             </div>
           </div>
 
-          {/* ── Mobile Live Preview Container (Only visible below XL, inserted between steps 1 and 2) ── */}
-          <div className="xl:hidden w-full overflow-x-hidden mt-4">
-            <div className="flex items-center justify-between mb-3 px-2">
-              <h2 className="text-sm font-bold text-white">Live Preview</h2>
-              <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
-            </div>
-
-            <div className="flex flex-col items-center gap-6 w-full">
-              {/* Front Card Wrapper */}
-              <div className="w-full flex justify-center px-2">
-                <div className="origin-top scale-[0.9] sm:scale-[0.95] md:scale-100 shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-xl overflow-hidden flex justify-center bg-white" id="aadhaar-front-mobile">
-                  <FrontCard data={data} photoSrc={photo} />
-                </div>
-              </div>
-
-              {/* Back Card Wrapper */}
-              <div className="w-full flex justify-center px-2">
-                <div className="origin-top scale-[0.9] sm:scale-[0.95] md:scale-100 shadow-lg shadow-black/40 ring-1 ring-slate-800/50 rounded-xl overflow-hidden flex justify-center bg-white" id="aadhaar-back-mobile">
-                  <BackCard data={data} />
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* ── Front Card Details ── */}
           <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 space-y-4">
