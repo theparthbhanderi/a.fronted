@@ -88,11 +88,11 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
       {/* Right col: identity details */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: 14, paddingTop: 2 }}>
         {/* Gujarati name */}
-        <div style={{ fontSize: 12.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.25 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', fontFamily: 'Arial, sans-serif', lineHeight: 1.25 }}>
           {data.nameLocal}
         </div>
         {/* English name */}
-        <div style={{ fontSize: 13, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.25 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.25 }}>
           {data.nameEnglish}
         </div>
 
@@ -202,7 +202,7 @@ const BackCard = ({ data }: { data: CardData }) => (
           </div>
 
           {/* English address label */}
-          <div style={{ fontSize: 12, fontWeight: 'normal', color: '#000', marginTop: 6, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.2 }}>
+          <div style={{ fontSize: 11.5, fontWeight: 'normal', color: '#000', marginTop: 6, fontFamily: '"Times New Roman", Times, serif', lineHeight: 1.2 }}>
             Address:
           </div>
           {/* English address text */}

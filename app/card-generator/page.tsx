@@ -86,13 +86,13 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
 
             {/* Right col: details */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingLeft: 12, paddingTop: 1 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 'bold', color: '#000' }}>{data.nameLocal}</div>
-                <div style={{ fontSize: 13.5, color: '#000', marginTop: 1 }}>{data.nameEnglish}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000' }}>{data.nameLocal}</div>
+                <div style={{ fontSize: 11.5, color: '#000', marginTop: 1 }}>{data.nameEnglish}</div>
 
-                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 3, fontFamily: '"Times New Roman", Times, serif' }}>
+                <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000', marginTop: 3, fontFamily: '"Times New Roman", Times, serif' }}>
                     જન્મ તારીખ/DOB: <span style={{ fontWeight: 'normal' }}>{data.dob}</span>
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif' }}>
+                <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000', marginTop: 1, fontFamily: '"Times New Roman", Times, serif' }}>
                     {data.genderLocal}/ <span style={{ fontWeight: 'normal' }}>{data.gender}</span>
                 </div>
 
@@ -104,7 +104,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                     width: '100%',
                     boxSizing: 'border-box'
                 }}>
-                    <div style={{ fontSize: 9.8, color: '#000', lineHeight: 1.25, fontFamily: 'Arial, sans-serif' }}>
+                    <div style={{ fontSize: 9.5, color: '#000', lineHeight: 1.25, fontFamily: 'Arial, sans-serif' }}>
                         <div style={{ textAlign: 'justify', textAlignLast: 'justify', fontWeight: 'bold' }}>
                             આધાર એ ઓળખનો પુરાવો છે, નાગરિકતા અથવા જન્મ તારીખનો નહીં.
                         </div>
@@ -115,7 +115,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData; photoSrc: string | null
                             કોડ/ઓફલાઇન એક્સએમએલનું સ્કેનીંગ) સાથે જ થવો જોઈએ.
                         </div>
                     </div>
-                    <div style={{ fontSize: 9.8, color: '#000', lineHeight: 1.25, marginTop: 2, fontFamily: 'Arial, sans-serif' }}>
+                    <div style={{ fontSize: 9.5, color: '#000', lineHeight: 1.25, marginTop: 2, fontFamily: 'Arial, sans-serif' }}>
                         <div style={{ textAlign: 'justify', textAlignLast: 'justify', fontWeight: 'bold' }}>
                             Aadhaar is proof of identity, not of citizenship
                         </div>
@@ -174,12 +174,12 @@ const BackCard = ({ data }: { data: CardData }) => (
                     Details as on: {data.updateDate}
                 </div>
                 <div style={{ flex: 1, paddingTop: 2, overflow: 'hidden' }}>
-                    <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000' }}>સરનામું :</div>
+                    <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000' }}>સરનામું :</div>
                     <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {data.addressLocal}
                     </div>
 
-                    <div style={{ fontSize: 12, fontWeight: 'bold', color: '#000', marginTop: 6, fontFamily: '"Times New Roman", Times, serif' }}>Address:</div>
+                    <div style={{ fontSize: 11.5, fontWeight: 'bold', color: '#000', marginTop: 6, fontFamily: '"Times New Roman", Times, serif' }}>Address:</div>
                     <div style={{ fontSize: 11.5, color: '#000', lineHeight: 1.3, marginTop: 1, paddingRight: 5, whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: '"Times New Roman", Times, serif' }}>
                         {data.addressEnglish}
                     </div>
