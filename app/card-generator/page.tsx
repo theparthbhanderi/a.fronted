@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeCanvas } from 'qrcode.react';
-import { toPng, toBlob } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface CardData {
