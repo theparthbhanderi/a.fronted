@@ -577,7 +577,10 @@ export default function CardGeneratorPage() {
               </div>
               <div>
                 <h1 className="text-sm sm:text-base font-bold">KINGPARTH</h1>
-                <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold">Aadhaar Format UI Generator</p>
+                  <a href="/format-2" className="text-[10px] bg-slate-800 border border-slate-700 px-2 py-0.5 rounded hover:bg-slate-700 transition-colors text-white whitespace-nowrap">Go to Format 2</a>
+                </div>
               </div>
             </div>
           </div>
