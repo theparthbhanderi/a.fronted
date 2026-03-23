@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { QRCodeCanvas } from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { toBlob } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -43,7 +43,7 @@ const DynamicQRCode = ({ data }: { data: CardData }) => {
 
     return (
         <div style={{ width: 140, height: 140, background: '#fff', padding: 2, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <QRCodeCanvas value={qrString} size={138} level="H" includeMargin={false} />
+            <QRCodeSVG value={qrString} size={138} level="H" includeMargin={false} />
         </div>
     );
 };
