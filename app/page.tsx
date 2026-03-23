@@ -324,13 +324,69 @@ export default function CardGeneratorPage() {
   // ─── Transliteration Helper ───
   const transliterate = async (text: string, field: 'name' | 'address') => {
     if (!text || !autoTranslate) return;
+
+    // Pre-process common address terms to their correct Gujarati equivalents
+    const dict: Record<string, string> = {
+      'house no.': 'ઘર નં.', 'house no': 'ઘર નં.', 'h.no.': 'ઘર નં.', 'h no': 'ઘર નં.', 'house': 'ઘર',
+      'soc.': 'સોસાયટી', 'soc': 'સોસાયટી', 'society': 'સોસાયટી',
+      'main road': 'મેઈન રોડ', 'road': 'રોડ',
+      'street': 'શેરી', 'st.': 'શેરી',
+      'near': 'પાસે', 'nr.': 'પાસે', 'nr': 'પાસે',
+      'opp.': 'સામે', 'opp': 'સામે', 'opposite': 'સામે',
+      'behind': 'પાછળ', 'b/h': 'પાછળ', 'b/h.': 'પાછળ',
+      'vill.': 'ગામ', 'village': 'ગામ',
+      'ta.': 'તાલુકો', 'taluka': 'તાલુકો',
+      'dist.': 'જિલ્લો', 'dist': 'જિલ્લો', 'district': 'જિલ્લો',
+      'gujarat': 'ગુજરાત',
+      'apt.': 'એપાર્ટમેન્ટ', 'apt': 'એપાર્ટમેન્ટ', 'apartment': 'એપાર્ટમેન્ટ',
+      'block': 'બ્લોક', 'nagar': 'નગર', 'park': 'પાર્ક', 'plot': 'પ્લોટ'
+    };
+
+    let processedText = text;
+    const keys = Object.keys(dict).sort((a, b) => b.length - a.length);
+    for (const key of keys) {
+      // Match whole words, case-insensitively, allowing punctuation around them
+      const regex = new RegExp(`(^|[^a-zA-Z])` + key.replace(/\./g, '\\.') + `(?=[^a-zA-Z]|$)`, 'gi');
+      processedText = processedText.replace(regex, (m, g1) => g1 + dict[key]);
+    }
+
+    // Extract remaining pure English words
+    const englishWordsMatch = processedText.match(/[a-zA-Z]+/g);
+    if (!englishWordsMatch) {
+      // Convert any Gujarati numbers back to English numerals just in case
+      processedText = processedText.replace(/[૦-૯]/g, (m: string) => "0123456789"["૦૧૨૩૪૫૬૭૮૯".indexOf(m)]);
+      if (field === 'name') setData(d => ({ ...d, nameLocal: processedText }));
+      else setData(d => ({ ...d, addressLocal: processedText }));
+      return;
+    }
+
+    // Unique words to avoid translating the same word multiple times
+    const uniqueEnglishWords = Array.from(new Set(englishWordsMatch));
+    const queryText = uniqueEnglishWords.join('\n');
+
     try {
-      const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
+      const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(queryText)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
       const json = await res.json();
-      if (json[0] === 'SUCCESS' && json[1]?.[0]?.[1]?.[0]) {
-        const translated = json[1][0][1][0];
-        if (field === 'name') setData(d => ({ ...d, nameLocal: translated }));
-        else setData(d => ({ ...d, addressLocal: translated }));
+      
+      if (json[0] === 'SUCCESS' && Array.isArray(json[1])) {
+        // Join all returned chunks to preserve the \n boundaries perfectly
+        const fullTranslatedString = json[1].map((chunk: any) => chunk[1][0]).join('');
+        const translatedWords = fullTranslatedString.split('\n');
+        
+        // Replace the English words in the original processedText with their translations
+        uniqueEnglishWords.forEach((word, idx) => {
+          if (translatedWords[idx]) {
+            // Word boundary \b is safe here because 'word' contains only [a-zA-Z]
+            const regex = new RegExp(`\\b${word}\\b`, 'g');
+            processedText = processedText.replace(regex, translatedWords[idx]);
+          }
+        });
+
+        // Convert Gujarati numbers back to English numerals
+        processedText = processedText.replace(/[૦-૯]/g, (m: string) => "0123456789"["૦૧૨૩૪૫૬૭૮૯".indexOf(m)]);
+        
+        if (field === 'name') setData(d => ({ ...d, nameLocal: processedText }));
+        else setData(d => ({ ...d, addressLocal: processedText }));
       }
     } catch (e) { console.error('Transliteration failed', e); }
   };
@@ -380,6 +436,7 @@ export default function CardGeneratorPage() {
     return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
   };
 
+  const generateDob = () => set('dob')(getRandomDate(1985, 2002));
   const generateIssueDate = () => set('issueDate')(getRandomDate(2012, 2015));
   const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
 
@@ -635,7 +692,7 @@ export default function CardGeneratorPage() {
               {/* DOB — Date Picker */}
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
-                <div className="grid grid-cols-[1fr_90px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_90px_auto] gap-2 items-center">
                   <input
                     type="text"
                     value={data.dob}
@@ -649,6 +706,7 @@ export default function CardGeneratorPage() {
                     onChange={(e) => handleDobPick(e.target.value)}
                     className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-2 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
                   />
+                  <ActionBtn onClick={generateDob} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                 </div>
                 {dobError && <span className="text-xs text-red-400">{dobError}</span>}
               </div>
