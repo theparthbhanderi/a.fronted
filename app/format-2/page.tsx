@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toBlob } from 'html-to-image';
+import { QRCodeSVG } from 'qrcode.react';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface PanData {
@@ -13,81 +14,96 @@ interface PanData {
 }
 
 // ─── Pan Card Overlay Engine ──────────────────────────────────────────────────
-const PanCard = ({ data, photoSrc, signatureSrc }: { data: PanData, photoSrc: string | null, signatureSrc: string | null }) => (
-  <div 
-    id="pan-card"
-    style={{
-      width: 420, height: 265, position: 'relative', overflow: 'hidden',
-      fontFamily: '"Times New Roman", Times, serif',
-      // Print Realism Filter directly integrated per specification
-      filter: 'contrast(0.98) brightness(0.98)'
-    }}
-    className="bg-white rounded-[6px] shadow-sm select-none"
-  >
-    {/* Base Background Image Layer */}
-    <img 
-       src="/images/PAN FORMAT.jpeg" 
-       alt="PAN Background Template" 
-       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 0 }}
-    />
+const PanCard = ({ data, photoSrc, signatureSrc }: { data: PanData, photoSrc: string | null, signatureSrc: string | null }) => {
+  // Create a payload for the QR code
+  const qrData = `name="${data.name}", father="${data.fatherName}", dob="${data.dob}", pan="${data.panNumber}"`;
 
-    {/* Realism Noise Overlay */}
-    <div style={{
-       position: 'absolute', inset: 0, opacity: 0.04, mixBlendMode: 'multiply',
-       background: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")',
-       zIndex: 1, pointerEvents: 'none'
-    }}></div>
+  return (
+    <div 
+      id="pan-card"
+      style={{
+        width: 420, height: 265, position: 'relative', overflow: 'hidden',
+        fontFamily: '"Times New Roman", Times, serif',
+        filter: 'contrast(0.98) brightness(0.98)'
+      }}
+      className="bg-white rounded-[6px] shadow-sm select-none"
+    >
+      {/* Base Background Image Layer */}
+      <img 
+         src="/images/PAN FORMAT.jpeg" 
+         alt="PAN Background Template" 
+         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain', zIndex: 0 }}
+      />
 
-    {/* Data Absolute Overlay Layer (Z-index 10) */}
-    <div style={{ position: 'relative', width: '100%', height: '100%', zIndex: 10 }}>
-        
-        {/* Photo Box */}
-        {photoSrc ? (
-            <img 
-               src={photoSrc} 
-               alt="Photo"
-               style={{ 
-                   position: 'absolute', top: 92, left: 24, width: 73, height: 95, 
-                   objectFit: 'cover', filter: 'contrast(0.95) saturate(0.9)',
-               }} 
-            />
-        ) : (
-            <div style={{ position: 'absolute', top: 92, left: 24, width: 73, height: 95, background: 'rgba(0,0,0,0.05)' }} />
-        )}
+      {/* Realism Noise Overlay */}
+      <div style={{
+         position: 'absolute', inset: 0, opacity: 0.04, mixBlendMode: 'multiply',
+         background: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")',
+         zIndex: 1, pointerEvents: 'none'
+      }}></div>
 
-        {/* Signature Box */}
-        {signatureSrc ? (
-            <img 
-               src={signatureSrc} 
-               alt="Signature"
-               style={{ position: 'absolute', top: 195, left: 16, width: 88, height: 26, objectFit: 'contain' }} 
-            />
-        ) : (
-            <div style={{ position: 'absolute', top: 195, left: 16, width: 88, height: 26, background: 'rgba(0,0,0,0.02)' }} />
-        )}
+      {/* Data Absolute Overlay Layer (Z-index 10) */}
+      <div style={{ position: 'relative', width: '100%', height: '100%', zIndex: 10 }}>
+          
+          {/* Top Center: PAN Number */}
+          <div style={{ position: 'absolute', top: 100, left: 132, width: 156, textAlign: 'center', fontSize: 18, fontWeight: 'bold', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: 0.8, color: '#000' }}>
+              {data.panNumber}
+          </div>
 
-        {/* Full Name */}
-        <div style={{ position: 'absolute', top: 88, left: 126, fontSize: 13.5, fontWeight: 700, letterSpacing: 0.3, color: '#000', textTransform: 'uppercase' }}>
-            {data.name}
-        </div>
+          {/* Left Side: Photo Box */}
+          {photoSrc ? (
+              <img 
+                 src={photoSrc} 
+                 alt="Photo"
+                 style={{ 
+                     position: 'absolute', top: 76, left: 24, width: 73, height: 95, 
+                     objectFit: 'cover', filter: 'contrast(0.95) saturate(0.9)',
+                     border: '1px solid #777'
+                 }} 
+              />
+          ) : (
+              <div style={{ position: 'absolute', top: 76, left: 24, width: 73, height: 95, background: 'rgba(0,0,0,0.05)', border: '1px solid #ddd' }} />
+          )}
 
-        {/* Father's Name */}
-        <div style={{ position: 'absolute', top: 122, left: 126, fontSize: 13.5, fontWeight: 700, letterSpacing: 0.3, color: '#000', textTransform: 'uppercase' }}>
-            {data.fatherName}
-        </div>
+          {/* Left Side: Full Name */}
+          <div style={{ position: 'absolute', top: 151, left: 24, fontSize: 13.5, fontWeight: 'bold', letterSpacing: 0.3, color: '#000', textTransform: 'uppercase', fontFamily: '"Arial", sans-serif' }}>
+              {data.name}
+          </div>
 
-        {/* DOB */}
-        <div style={{ position: 'absolute', top: 154, left: 126, fontSize: 13.5, fontWeight: 700, letterSpacing: 0.3, color: '#000' }}>
-            {data.dob}
-        </div>
+          {/* Left Side: Father's Name */}
+          <div style={{ position: 'absolute', top: 184, left: 24, fontSize: 13.5, fontWeight: 'bold', letterSpacing: 0.3, color: '#000', textTransform: 'uppercase', fontFamily: '"Arial", sans-serif' }}>
+              {data.fatherName}
+          </div>
 
-        {/* PAN Number */}
-        <div style={{ position: 'absolute', top: 183, left: 126, fontSize: 19.5, fontWeight: 900, fontFamily: '"Courier New", Courier, monospace', letterSpacing: 1.8, color: '#000' }}>
-            {data.panNumber}
-        </div>
+          {/* Left Side: DOB */}
+          <div style={{ position: 'absolute', top: 228, left: 24, fontSize: 13.5, fontWeight: 'bold', letterSpacing: 0.3, color: '#000', fontFamily: '"Arial", sans-serif' }}>
+              {data.dob}
+          </div>
+
+          {/* Right Side: QR Code Box */}
+          <div style={{ position: 'absolute', top: 75, right: 26, width: 95, height: 95, background: '#fff', border: '1px solid #777', padding: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <QRCodeSVG value={qrData} size={91} level="H" includeMargin={false} />
+          </div>
+
+          {/* Info Text Right Side (Vertical Date) */}
+          <div style={{ position: 'absolute', top: 185, right: 26, fontSize: 10, alignSelf: 'center', color: '#000', letterSpacing: 0.5 }}>
+             05082023
+          </div>
+
+          {/* Bottom Center: Signature Box */}
+          {signatureSrc ? (
+              <img 
+                 src={signatureSrc} 
+                 alt="Signature"
+                 style={{ position: 'absolute', top: 215, left: 150, width: 100, height: 35, objectFit: 'contain' }} 
+              />
+          ) : (
+              <div style={{ position: 'absolute', top: 215, left: 150, width: 100, height: 35, background: 'rgba(0,0,0,0.02)' }} />
+          )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -142,10 +158,10 @@ export default function PanGeneratorPage() {
 
   // Default seeded mockup state matching precise PAN standard spacing
   const [data, setData] = useState<PanData>({
-    name: 'PARTH BHANDERI',
-    fatherName: 'JAYANTIBHAI BHANDERI',
-    dob: '15/08/1990',
-    panNumber: 'ABCDE1234F',
+    name: 'PARTH RAMESHBHAI BHANDERI',
+    fatherName: 'RAMESHBHAI BABUBHAI BHANDERI',
+    dob: '26/06/2005',
+    panNumber: 'HJKPB7081Q',
   });
 
   const set = (k: keyof PanData) => (v: string) => setData((d) => ({ ...d, [k]: v }));
@@ -306,8 +322,8 @@ export default function PanGeneratorPage() {
             </h2>
 
             <div className="flex flex-col gap-5">
-              <Field label="Full Name" value={data.name} onChange={set('name')} placeholder="e.g. JOHN DOE" />
-              <Field label="Father's Name" value={data.fatherName} onChange={set('fatherName')} placeholder="e.g. RICHARD DOE" />
+              <Field label="Full Name" value={data.name} onChange={set('name')} placeholder="e.g. PARTH RAMESHBHAI BHANDERI" />
+              <Field label="Father's Name" value={data.fatherName} onChange={set('fatherName')} placeholder="e.g. RAMESHBHAI BABUBHAI BHANDERI" />
 
               <div className="flex flex-col space-y-2 w-full">
                 <label className="text-sm font-semibold text-orange-300 uppercase tracking-wide">Date of Birth</label>
@@ -336,7 +352,7 @@ export default function PanGeneratorPage() {
                     type="text"
                     value={data.panNumber}
                     onChange={(e) => set('panNumber')(handlePanFormat(e.target.value))}
-                    placeholder="ABCDE1234F"
+                    placeholder="HJKPB7081Q"
                     className={`bg-slate-800/70 border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-orange-500 font-mono tracking-widest uppercase w-full ${panError ? 'border-red-500/70' : 'border-slate-600/50'}`}
                   />
                   <ActionBtn onClick={generatePan} className="min-h-[44px]">🎲 Gen ID</ActionBtn>
