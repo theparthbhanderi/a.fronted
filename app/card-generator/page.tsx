@@ -282,13 +282,69 @@ export default function CardGeneratorPage() {
 
     const transliterate = async (text: string, field: 'name' | 'address') => {
         if (!text || !autoTranslate) return;
+
+        // Pre-process common address terms to their correct Gujarati equivalents
+        const dict: Record<string, string> = {
+            'house no.': 'ઘર નં.', 'house no': 'ઘર નં.', 'h.no.': 'ઘર નં.', 'h no': 'ઘર નં.', 'house': 'ઘર',
+            'soc.': 'સોસાયટી', 'soc': 'સોસાયટી', 'society': 'સોસાયટી',
+            'main road': 'મેઈન રોડ', 'road': 'રોડ',
+            'street': 'શેરી', 'st.': 'શેરી',
+            'near': 'પાસે', 'nr.': 'પાસે', 'nr': 'પાસે',
+            'opp.': 'સામે', 'opp': 'સામે', 'opposite': 'સામે',
+            'behind': 'પાછળ', 'b/h': 'પાછળ', 'b/h.': 'પાછળ',
+            'vill.': 'ગામ', 'village': 'ગામ',
+            'ta.': 'તાલુકો', 'taluka': 'તાલુકો',
+            'dist.': 'જિલ્લો', 'dist': 'જિલ્લો', 'district': 'જિલ્લો',
+            'gujarat': 'ગુજરાત',
+            'apt.': 'એપાર્ટમેન્ટ', 'apt': 'એપાર્ટમેન્ટ', 'apartment': 'એપાર્ટમેન્ટ',
+            'block': 'બ્લોક', 'nagar': 'નગર', 'park': 'પાર્ક', 'plot': 'પ્લોટ'
+        };
+
+        let processedText = text;
+        const keys = Object.keys(dict).sort((a, b) => b.length - a.length);
+        for (const key of keys) {
+            // Match whole words, case-insensitively, allowing punctuation around them
+            const regex = new RegExp(`(^|[^a-zA-Z])` + key.replace(/\./g, '\\.') + `(?=[^a-zA-Z]|$)`, 'gi');
+            processedText = processedText.replace(regex, (m, g1) => g1 + dict[key]);
+        }
+
+        // Extract remaining pure English words
+        const englishWordsMatch = processedText.match(/[a-zA-Z]+/g);
+        if (!englishWordsMatch) {
+            // Convert any Gujarati numbers back to English numerals just in case
+            processedText = processedText.replace(/[૦-૯]/g, (m: string) => "0123456789"["૦૧૨૩૪૫૬૭૮૯".indexOf(m)]);
+            if (field === 'name') setData(d => ({ ...d, nameLocal: processedText }));
+            else setData(d => ({ ...d, addressLocal: processedText }));
+            return;
+        }
+
+        // Unique words to avoid translating the same word multiple times
+        const uniqueEnglishWords = Array.from(new Set(englishWordsMatch));
+        const queryText = uniqueEnglishWords.join('\n');
+
         try {
-            const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
+            const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(queryText)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
             const json = await res.json();
-            if (json[0] === 'SUCCESS' && json[1]?.[0]?.[1]?.[0]) {
-                const translated = json[1][0][1][0];
-                if (field === 'name') setData(d => ({ ...d, nameLocal: translated }));
-                else setData(d => ({ ...d, addressLocal: translated }));
+            
+            if (json[0] === 'SUCCESS' && Array.isArray(json[1])) {
+                // Join all returned chunks to preserve the \n boundaries perfectly
+                const fullTranslatedString = json[1].map((chunk: any) => chunk[1][0]).join('');
+                const translatedWords = fullTranslatedString.split('\n');
+                
+                // Replace the English words in the original processedText with their translations
+                uniqueEnglishWords.forEach((word, idx) => {
+                    if (translatedWords[idx]) {
+                        // Word boundary \b is safe here because 'word' contains only [a-zA-Z]
+                        const regex = new RegExp(`\\b${word}\\b`, 'g');
+                        processedText = processedText.replace(regex, translatedWords[idx]);
+                    }
+                });
+
+                // Convert Gujarati numbers back to English numerals
+                processedText = processedText.replace(/[૦-૯]/g, (m: string) => "0123456789"["૦૧૨૩૪૫૬૭૮૯".indexOf(m)]);
+                
+                if (field === 'name') setData(d => ({ ...d, nameLocal: processedText }));
+                else setData(d => ({ ...d, addressLocal: processedText }));
             }
         } catch (e) { console.error('Transliteration failed', e); }
     };
@@ -466,13 +522,17 @@ export default function CardGeneratorPage() {
                                 <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
                                 Front Card Details
                             </h2>
-                            <button
+                            <div 
                                 onClick={() => setAutoTranslate(!autoTranslate)}
-                                className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all ${autoTranslate ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-900 border-slate-700 text-slate-500'}`}
+                                className="flex items-center gap-3 cursor-pointer group select-none"
                             >
-                                <div className={`w-2 h-2 rounded-full ${autoTranslate ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">{autoTranslate ? 'Auto-Translate ON' : 'Manual Mode'}</span>
-                            </button>
+                                <span className={`text-[10px] font-bold uppercase tracking-wider transition-colors ${autoTranslate ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-400'}`}>
+                                    {autoTranslate ? 'Auto-Translate ON' : 'Manual Mode'}
+                                </span>
+                                <div className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-300 ease-in-out ${autoTranslate ? 'bg-emerald-500' : 'bg-slate-700'}`}>
+                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-300 ease-in-out ${autoTranslate ? 'translate-x-[18px]' : 'translate-x-[2px]'}`} />
+                                </div>
+                            </div>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <Field
@@ -484,16 +544,17 @@ export default function CardGeneratorPage() {
                                 }}
                             />
                             <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} />
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
-                                <div className="grid grid-cols-[1fr_auto] gap-2">
+                            <div className="flex flex-col space-y-2">
+                                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
+                                <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                                     <input
                                         type="text"
                                         value={data.dob}
                                         onChange={(e) => set('dob')(e.target.value)}
-                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                        placeholder="DD/MM/YYYY"
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
                                     />
-                                    <ActionBtn onClick={generateDob} className="px-3 text-[10px]">🎲 Gen</ActionBtn>
+                                    <ActionBtn onClick={generateDob} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                                 </div>
                             </div>
                             <Field label="Gender" value={data.gender} onChange={set('gender')} />

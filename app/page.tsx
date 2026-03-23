@@ -668,13 +668,17 @@ export default function CardGeneratorPage() {
                 <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
                 Front Card Details
               </h2>
-              <button 
+              <div 
                 onClick={() => setAutoTranslate(!autoTranslate)}
-                className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all ${autoTranslate ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-500'}`}
+                className="flex items-center gap-3 cursor-pointer group select-none"
               >
-                <div className={`w-2 h-2 rounded-full ${autoTranslate ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
-                <span className="text-[10px] font-bold uppercase tracking-wider">{autoTranslate ? 'Auto-Translate ON' : 'Manual Mode'}</span>
-              </button>
+                <span className={`text-[10px] font-bold uppercase tracking-wider transition-colors ${autoTranslate ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-400'}`}>
+                  {autoTranslate ? 'Auto-Translate ON' : 'Manual Mode'}
+                </span>
+                <div className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-300 ease-in-out ${autoTranslate ? 'bg-emerald-500' : 'bg-slate-700'}`}>
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-300 ease-in-out ${autoTranslate ? 'translate-x-[18px]' : 'translate-x-[2px]'}`} />
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Names */}
