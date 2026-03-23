@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { QRCodeCanvas } from 'qrcode.react';
-import html2canvas from 'html2canvas';
+import { toBlob } from 'html-to-image';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface CardData {
@@ -300,56 +300,44 @@ export default function CardGeneratorPage() {
         return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
     };
 
+    const generateDob = () => set('dob')(getRandomDate(1950, 2005));
     const generateIssueDate = () => set('issueDate')(getRandomDate(2012, 2015));
     const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
 
     const handleDownload = async (side: 'front' | 'back') => {
         const id = side === 'front' ? 'aadhaar-front' : 'aadhaar-back';
         const element = document.getElementById(id);
-        if (!element) {
-            alert('Error: Card element not found (' + id + ')');
-            return;
-        }
+        if (!element) return;
 
         setIsDownloading(true);
         try {
-            // Use html2canvas for better mobile support as html-to-image is failing "Zero KB" on some browsers
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                useCORS: true,
+            const blob = await toBlob(element, {
+                pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
                 backgroundColor: '#ffffff',
-                logging: false,
-                allowTaint: true,
+                cacheBust: true,
             });
 
-            canvas.toBlob((blob: Blob | null) => {
-                if (!blob) {
-                    alert('Error: Failed to generate image blob');
-                    setIsDownloading(false);
-                    return;
-                }
-                
-                const dataUrl = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.style.display = 'none';
-                link.href = dataUrl;
-                link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
-                
-                document.body.appendChild(link);
-                link.click();
-                
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(dataUrl);
-                }, 400);
+            if (!blob) return;
+            const dataUrl = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = dataUrl;
+            link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
+            
+            document.body.appendChild(link);
+            link.click();
+            
+            // Small delay before cleanup for mobile browser reliability
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(dataUrl);
+            }, 400);
 
-                setIsDownloadModalOpen(false);
-                setIsDownloading(false);
-            }, 'image/png', 1.0);
-
+            setIsDownloadModalOpen(false);
         } catch (err) {
             console.error('Download failed', err);
-            alert('Download failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
+        } finally {
             setIsDownloading(false);
         }
     };
@@ -496,7 +484,18 @@ export default function CardGeneratorPage() {
                                 }}
                             />
                             <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} />
-                            <Field label="Date of Birth" value={data.dob} onChange={set('dob')} />
+                            <div className="flex flex-col gap-1">
+                                <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
+                                <div className="grid grid-cols-[1fr_auto] gap-2">
+                                    <input
+                                        type="text"
+                                        value={data.dob}
+                                        onChange={(e) => set('dob')(e.target.value)}
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                    />
+                                    <ActionBtn onClick={generateDob} className="px-3 text-[10px]">🎲 Gen</ActionBtn>
+                                </div>
+                            </div>
                             <Field label="Gender" value={data.gender} onChange={set('gender')} />
                             <Field label="Gender (Gujarati)" value={data.genderLocal} onChange={set('genderLocal')} />
                             <Field label="12-Digit ID Number" value={data.idNumber} onChange={set('idNumber')} />
