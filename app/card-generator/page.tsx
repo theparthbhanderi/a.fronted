@@ -221,7 +221,7 @@ const BackCard = ({ data }: { data: CardData }) => (
 const ActionBtn = ({ onClick, children, className = '' }: { onClick: () => void, children: React.ReactNode, className?: string }) => (
     <button
         onClick={onClick}
-        className={`bg-slate-700/50 hover:bg-slate-600 border border-slate-600/50 text-indigo-300 font-bold rounded-lg transition-all active:scale-95 ${className}`}
+        className={`bg-slate-700/50 hover:bg-slate-600 border border-slate-600/50 text-orange-300 font-bold rounded-lg transition-all active:scale-95 ${className}`}
     >
         {children}
     </button>
@@ -235,14 +235,14 @@ const Field = ({
     placeholder?: string; type?: string; isTextArea?: boolean
 }) => (
     <div className="flex flex-col gap-1">
-        <label className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wide">{label}</label>
+        <label className="text-[11px] font-semibold text-orange-300 uppercase tracking-wide">{label}</label>
         {isTextArea ? (
             <textarea
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
                 rows={3}
-                className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500 resize-none"
+                className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 placeholder:text-slate-500 resize-none"
             />
         ) : (
             <input
@@ -250,7 +250,7 @@ const Field = ({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                className="bg-slate-800/70 border border-slate-600/50 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-orange-500 placeholder:text-slate-500"
             />
         )}
     </div>
@@ -439,7 +439,7 @@ export default function CardGeneratorPage() {
             <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold flex items-center justify-center shrink-0">
                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1" />
                             </svg>
@@ -451,7 +451,7 @@ export default function CardGeneratorPage() {
                     </div>
                     <button
                         onClick={handlePrint}
-                        className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
+                        className="bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold  text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
                     >
                         Save / Print PDF
                     </button>
@@ -468,13 +468,13 @@ export default function CardGeneratorPage() {
                             <div className="flex bg-slate-900 p-1 rounded-lg border border-slate-700">
                                 <button
                                     onClick={() => setActiveTab('front')}
-                                    className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'front' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                    className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'front' ? 'bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     Front
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('back')}
-                                    className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'back' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                                    className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'back' ? 'bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                                 >
                                     Back
                                 </button>
@@ -495,13 +495,13 @@ export default function CardGeneratorPage() {
                     </div>
                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
                         <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                            <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
+                            <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
                             Upload Portrait Photo
                         </h2>
                         <div
                             {...getRootProps()}
                             className={`border-2 border-dashed rounded-xl min-h-[100px] flex items-center justify-center gap-3 cursor-pointer transition-all p-4
-                ${isDragActive ? 'border-indigo-400 bg-indigo-900/20' : 'border-slate-600 hover:border-indigo-600 bg-slate-900/50'}`}
+                ${isDragActive ? 'border-orange-400 bg-orange-900/20' : 'border-slate-600 hover:border-orange-600 bg-slate-900/50'}`}
                         >
                             <input {...getInputProps()} />
                             {photo ? (
@@ -520,7 +520,7 @@ export default function CardGeneratorPage() {
                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                                <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
+                                <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
                                 Front Card Details
                             </h2>
                             <div 
@@ -546,14 +546,14 @@ export default function CardGeneratorPage() {
                             />
                             <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} />
                             <div className="flex flex-col space-y-2">
-                                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Date of Birth</label>
+                                <label className="text-sm font-semibold text-orange-300 uppercase tracking-wide">Date of Birth</label>
                                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                                     <input
                                         type="text"
                                         value={data.dob}
                                         onChange={(e) => set('dob')(e.target.value)}
                                         placeholder="DD/MM/YYYY"
-                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-orange-500 placeholder:text-slate-500"
                                     />
                                     <ActionBtn onClick={generateDob} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                                 </div>
@@ -562,14 +562,14 @@ export default function CardGeneratorPage() {
                             <Field label="Gender (Gujarati)" value={data.genderLocal} onChange={set('genderLocal')} />
                             <Field label="12-Digit ID Number" value={data.idNumber} onChange={set('idNumber')} />
                             <div className="flex flex-col space-y-2">
-                                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Issue Date</label>
+                                <label className="text-sm font-semibold text-orange-300 uppercase tracking-wide">Issue Date</label>
                                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                                     <input
                                         type="text"
                                         value={data.issueDate}
                                         onChange={(e) => set('issueDate')(e.target.value)}
                                         placeholder="DD/MM/YYYY"
-                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-orange-500 placeholder:text-slate-500"
                                     />
                                     <ActionBtn onClick={generateIssueDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                                 </div>
@@ -579,7 +579,7 @@ export default function CardGeneratorPage() {
 
                     <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
                         <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                            <span className="w-5 h-5 bg-indigo-600 rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
+                            <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold rounded-full text-[10px] flex items-center justify-center font-bold">3</span>
                             Back Card Details
                         </h2>
                         <div className="grid grid-cols-1 gap-3">
@@ -595,14 +595,14 @@ export default function CardGeneratorPage() {
                             <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
                             <Field label="16-Digit Virtual ID (VID)" value={data.vid} onChange={set('vid')} />
                             <div className="flex flex-col space-y-2">
-                                <label className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">Last Updated Date</label>
+                                <label className="text-sm font-semibold text-orange-300 uppercase tracking-wide">Last Updated Date</label>
                                 <div className="grid grid-cols-[1fr_auto] gap-2 items-center">
                                     <input
                                         type="text"
                                         value={data.updateDate}
                                         onChange={(e) => set('updateDate')(e.target.value)}
                                         placeholder="DD/MM/YYYY"
-                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-indigo-500 placeholder:text-slate-500"
+                                        className="w-full bg-slate-800/70 border border-slate-600/50 text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-orange-500 placeholder:text-slate-500"
                                     />
                                     <ActionBtn onClick={generateUpdateDate} className="min-h-[44px] px-3 text-[10px]">🎲 Gen</ActionBtn>
                                 </div>
@@ -619,7 +619,7 @@ export default function CardGeneratorPage() {
                         </div>
                         <button
                             onClick={() => setIsDownloadModalOpen(true)}
-                            className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-white transition-colors flex items-center gap-1.5"
+                            className="text-[10px] font-bold uppercase tracking-widest text-orange-400 hover:text-white transition-colors flex items-center gap-1.5"
                         >
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -659,7 +659,7 @@ export default function CardGeneratorPage() {
                     </button>
                     <button
                         onClick={handlePrint}
-                        className="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center gap-2"
+                        className="bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold  active:scale-95 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center gap-2"
                     >
                         Save / Print PDF
                     </button>
@@ -683,10 +683,10 @@ export default function CardGeneratorPage() {
                             <button
                                 onClick={() => handleDownload('front')}
                                 disabled={isDownloading}
-                                className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-indigo-600/20 border border-slate-700 hover:border-indigo-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
+                                className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold/20 border border-slate-700 hover:border-orange-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
                             >
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-indigo-600/20 rounded-xl flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold/20 rounded-xl flex items-center justify-center text-orange-400 group-hover:bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold group-hover:text-white transition-all">
                                         🪪
                                     </div>
                                     <div className="text-left">
@@ -694,7 +694,7 @@ export default function CardGeneratorPage() {
                                         <p className="text-[11px] text-slate-500 uppercase font-bold tracking-tight">Standard ID View</p>
                                     </div>
                                 </div>
-                                <div className="text-slate-600 group-hover:text-indigo-400">
+                                <div className="text-slate-600 group-hover:text-orange-400">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>

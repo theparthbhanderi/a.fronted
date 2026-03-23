@@ -51,7 +51,7 @@ export default function DropZone({
             <div
                 {...getRootProps()}
                 className={`dropzone glass-card border-2 border-dashed cursor-pointer min-h-[180px] flex flex-col items-center justify-center gap-3 p-6 transition-all
-          ${isDragActive ? 'dropzone-active border-indigo-500' : 'border-indigo-900/50 hover:border-indigo-600'}`}
+          ${isDragActive ? 'dropzone-active border-orange-500' : 'border-orange-900/50 hover:border-orange-600'}`}
             >
                 <input {...getInputProps()} />
 
@@ -60,19 +60,19 @@ export default function DropZone({
                         <img
                             src={preview}
                             alt="Preview"
-                            className="rounded-lg max-h-[130px] object-contain border border-indigo-500/30"
+                            className="rounded-lg max-h-[130px] object-contain border border-orange-500/30"
                         />
-                        <p className="text-xs text-indigo-300">Click or drop to replace</p>
+                        <p className="text-xs text-orange-300">Click or drop to replace</p>
                     </div>
                 ) : (
                     <>
-                        <div className="text-indigo-400 opacity-70">{icon}</div>
+                        <div className="text-orange-400 opacity-70">{icon}</div>
                         <div className="text-center">
                             <p className="text-sm font-semibold text-white">
                                 {isDragActive ? 'Drop it here!' : label}
                             </p>
-                            <p className="text-xs text-indigo-300 mt-1">{sublabel}</p>
-                            <p className="mt-2 text-[11px] text-indigo-400/70 font-mono">{acceptLabel}</p>
+                            <p className="text-xs text-orange-300 mt-1">{sublabel}</p>
+                            <p className="mt-2 text-[11px] text-orange-400/70 font-mono">{acceptLabel}</p>
                         </div>
                     </>
                 )}

@@ -10,7 +10,7 @@ interface PersonaPreviewProps {
 
 const Field = ({ label, value }: { label: string; value: string }) => (
     <div className="field-badge flex flex-col gap-0.5">
-        <span className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wide">{label}</span>
+        <span className="text-[10px] text-orange-400 font-semibold uppercase tracking-wide">{label}</span>
         <span className="text-sm text-white font-medium">{value}</span>
     </div>
 );
@@ -22,17 +22,17 @@ export default function PersonaPreview({ persona, format, onDownload }: PersonaP
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-lg font-bold gradient-text">Generated Persona</h3>
-                    <p className="text-xs text-indigo-300 mt-0.5">Synthetic • Fictional • Not a real person</p>
+                    <p className="text-xs text-orange-300 mt-0.5">Synthetic • Fictional • Not a real person</p>
                 </div>
                 <span className="watermark-badge">Mock Data</span>
             </div>
 
             {/* Main identity */}
-            <div className="rounded-xl bg-indigo-950/40 border border-indigo-800/30 p-4 flex flex-col gap-1">
+            <div className="rounded-xl bg-orange-950/40 border border-orange-800/30 p-4 flex flex-col gap-1">
                 <p className="text-2xl font-bold text-white">{persona.fullName}</p>
-                <p className="text-sm text-indigo-300">{persona.gender} · Age {persona.age} · {persona.nationality}</p>
-                <p className="text-xs font-mono text-indigo-400 mt-1">
-                    ID: <span className="text-indigo-200 font-semibold">{persona.idNumber}</span>
+                <p className="text-sm text-orange-300">{persona.gender} · Age {persona.age} · {persona.nationality}</p>
+                <p className="text-xs font-mono text-orange-400 mt-1">
+                    ID: <span className="text-orange-200 font-semibold">{persona.idNumber}</span>
                 </p>
             </div>
 
@@ -48,7 +48,7 @@ export default function PersonaPreview({ persona, format, onDownload }: PersonaP
 
             {/* Address full */}
             <div className="field-badge">
-                <span className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wide">Full Address</span>
+                <span className="text-[10px] text-orange-400 font-semibold uppercase tracking-wide">Full Address</span>
                 <p className="text-sm text-white mt-0.5">
                     {persona.address.street}, {persona.address.city}, {persona.address.state} {persona.address.postalCode}, {persona.address.country}
                 </p>
@@ -66,7 +66,7 @@ export default function PersonaPreview({ persona, format, onDownload }: PersonaP
             </button>
 
             {/* Disclaimer */}
-            <p className="text-[10px] text-center text-indigo-400/60 leading-relaxed">
+            <p className="text-[10px] text-center text-orange-400/60 leading-relaxed">
                 ⚠ This identity is entirely synthetic and fictional. Generated for UI testing and demos only.
                 Do not use for any fraudulent or deceptive purpose.
             </p>
