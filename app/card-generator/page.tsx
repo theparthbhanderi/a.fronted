@@ -328,6 +328,7 @@ export default function CardGeneratorPage() {
             
             if (json[0] === 'SUCCESS' && Array.isArray(json[1])) {
                 // Join all returned chunks to preserve the \n boundaries perfectly
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const fullTranslatedString = json[1].map((chunk: any) => chunk[1][0]).join('');
                 const translatedWords = fullTranslatedString.split('\n');
                 
