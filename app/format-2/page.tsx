@@ -478,9 +478,41 @@ ${styles}
             </div>
           </div>
 
+          {/* Portrait Photo Upload — right after preview, like Aadhaar */}
+          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-4 sm:p-6 shadow-xl">
+            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+              <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 text-slate-900 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
+              Upload Portrait Photo
+              <span className="text-[9px] text-slate-500 font-normal ml-auto">JPG, PNG</span>
+            </h2>
+            <div
+              {...getRootProps()}
+              className={`border-2 border-dashed rounded-xl h-32 sm:h-40 flex items-center justify-center gap-3 cursor-pointer transition-all p-4
+                ${isDragActive ? 'border-orange-400 bg-orange-900/20' : 'border-slate-600 hover:border-orange-600 bg-slate-900/50'}`}
+            >
+              <input {...getInputProps()} />
+              {photo ? (
+                <div className="flex items-center gap-4 h-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={photo} alt="Preview" className="h-full w-auto aspect-[3/4] object-cover rounded-lg border border-slate-500 shadow-lg" />
+                  <div>
+                    <p className="text-xs sm:text-sm text-white font-medium">Photo uploaded ✓</p>
+                    <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5">Click or drop to replace</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-2">
+                  <p className="text-lg sm:text-2xl text-slate-400">📷</p>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-2">Drag & drop or click to upload</p>
+                  <p className="text-xs text-slate-500 mt-1">JPG, PNG — passport photo</p>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-6 space-y-6 shadow-xl">
             <h2 className="text-sm font-bold flex items-center gap-2 border-b border-slate-700/50 pb-3">
-              <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 text-slate-900 rounded-full text-[10px] flex items-center justify-center font-bold">1</span>
+              <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 text-slate-900 rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
               Identity Details
             </h2>
             <div className="flex flex-col gap-5">
@@ -522,17 +554,7 @@ ${styles}
             </div>
           </div>
 
-          <div className="bg-slate-900/40 border border-slate-700 rounded-xl p-5 shadow-xl">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Portrait Photo</h2>
-            <div {...getRootProps()} className={`border border-dashed rounded-lg h-36 flex items-center justify-center cursor-pointer p-2 ${isDragActive ? 'border-orange-400 bg-orange-900/20' : 'border-slate-600 hover:border-orange-600 bg-slate-900/50'}`}>
-              <input {...getInputProps()} />
-              {photo ? (
-                <img src={photo} alt="Portrait" className="h-full w-auto aspect-[3/4] object-cover rounded shadow-md" />
-              ) : (
-                <div className="text-center text-slate-400 text-[11px] font-medium">Click or drag image file here</div>
-              )}
-            </div>
-          </div>
+
         </div>
 
         {/* RIGHT: CARD PREVIEW (Desktop only) */}
