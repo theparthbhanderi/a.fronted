@@ -187,7 +187,7 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
           className={roboto.className}
           style={{
             position: 'absolute',
-            bottom: '21.5%',
+            bottom: '21.7%',
             right: '6%',
             fontSize: 10.5,
             color: '#000'
@@ -398,22 +398,38 @@ ${styles}
 
       {/* NAVBAR */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between py-3 relative">
+        <div className="max-w-[420px] xl:max-w-7xl mx-auto px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 relative">
 
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center bg-white rounded-[6px] shadow-sm overflow-hidden">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+          <div className="flex items-center justify-between w-full sm:w-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shrink-0 bg-white rounded-lg shadow-sm overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+              </div>
+              <div>
+                <h1 className="text-sm sm:text-base font-bold flex items-center gap-2">
+                  KINGPARTH <span className="hidden sm:inline-block bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px]">Realism Engine</span>
+                </h1>
+                <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold mt-0.5">Pixel-Perfect Document Mode</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-sm font-bold flex items-center gap-2">
-                KINGPARTH <span className="bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded text-[10px]">Realism Engine</span>
-              </h1>
-              <p className="text-[10px] text-emerald-400 font-semibold mt-0.5">Pixel-Perfect Document Mode</p>
+
+            <div className="flex items-center gap-2 xl:hidden sm:hidden">
+              <button
+                onClick={() => setScanMode(!scanMode)}
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-full border text-[10px] font-bold ${scanMode ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
+              >
+                <div className={`w-1.5 h-1.5 rounded-full ${scanMode ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
+                {scanMode ? 'Scan ON' : 'Scan'}
+              </button>
+              <a href="/" className="text-[10px] bg-slate-800 border border-slate-700 px-2 py-1.5 rounded hover:bg-slate-700 text-white font-semibold">
+                <span className="sr-only">Go to </span>Aadhaar
+              </a>
             </div>
           </div>
 
-          {/* CENTRAL TABS */}
-          <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center bg-slate-800 p-1 rounded-lg border border-slate-700 shadow-inner">
+          {/* CENTRAL TABS (Desktop) */}
+          <div className="absolute left-1/2 -translate-x-1/2 hidden xl:flex items-center bg-slate-800 p-1 rounded-lg border border-slate-700 shadow-inner">
             <a href="/" className="px-5 py-1.5 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-colors">
               Aadhaar Card
             </a>
@@ -422,7 +438,8 @@ ${styles}
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Desktop-only buttons */}
+          <div className="hidden sm:flex items-center gap-3">
             <button
               onClick={() => setScanMode(!scanMode)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold ${scanMode ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}
@@ -430,17 +447,13 @@ ${styles}
               <div className={`w-2 h-2 rounded-full ${scanMode ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
               Scan Effect: {scanMode ? 'ON' : 'OFF'}
             </button>
-            <a href="/" className="md:hidden text-[10px] bg-slate-800 border border-slate-700 px-2 py-1.5 rounded hover:bg-slate-700 text-white font-semibold">
-              <span className="sr-only">Go to </span>Aadhaar
-            </a>
             <button
               onClick={handlePrint}
-              className="bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-white text-[10px] sm:text-xs font-semibold px-3 py-1.5 sm:py-2 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
+              className="bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-xs font-semibold px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
             >
               Save / Print PDF
             </button>
           </div>
-
 
         </div>
       </div>
@@ -543,6 +556,35 @@ ${styles}
         </div>
 
       </div>
+
+      {/* ─── Mobile Sticky Bottom Bar ─── */}
+      <div className="xl:hidden fixed bottom-0 left-0 right-0 p-4 bg-slate-900/95 backdrop-blur-2xl border-t border-slate-700/50 z-[60] flex items-center justify-between shadow-[0_-15px_40px_rgba(0,0,0,0.6)]">
+        <div className="flex flex-col">
+          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PAN Card</span>
+          <span className="text-xs text-emerald-400 font-bold">Ready for PDF</span>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="bg-slate-800 hover:bg-slate-700 active:scale-95 text-white p-3 rounded-xl transition-all border border-slate-700"
+            title="Download as Image"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </button>
+          <button
+            onClick={handlePrint}
+            className="bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold active:scale-95 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center gap-2"
+          >
+            Save / Print PDF
+          </button>
+        </div>
+      </div>
+
+      {/* Spacer for bottom bar */}
+      <div className="xl:hidden h-24" />
     </main>
   );
 }
