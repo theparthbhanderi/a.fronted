@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { toJpeg, toBlob } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
@@ -19,7 +19,7 @@ interface PanData {
   issueDate: string;
 }
 
-const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
+const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.jpeg' }: any) => {
 
   const qrData = `PAN:${data.panNumber}|NAME:${data.name}|FNAME:${data.fatherName}|DOB:${data.dob}|TYPE:INDIVIDUAL|STATUS:ACTIVE|CATEGORY:P|ISSUED:${data.issueDate}|ISSUER:NSDL_E_GOV|AO_CODE:ITO-W-24(3)-DEL|JURISDICTION:DELHI|ADDR:AHMEDABAD,GUJARAT,380015,IN|REF:${data.panNumber}${data.dob.replace(/\//g, '')}|HASH:SHA256:${data.panNumber.split('').map((c: string) => c.charCodeAt(0).toString(16)).join('')}|SIG:INCOME_TAX_DEPT_DIGITAL_CERT_2023|VERIFY:https://www.incometax.gov.in/iec/foportal/verify-pan-details`;
 
@@ -38,8 +38,9 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
     >
       {/* BACKGROUND */}
       <img
-        src="/images/PAN FORMAT.jpeg"
+        src={bgImage}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+        crossOrigin="anonymous"
       />
 
       {/* OVERLAY */}
@@ -64,10 +65,10 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
         {/* QR */}
         <div style={{
           position: 'absolute',
-          top: '29.5%',
-          right: '6.3%',
-          width: 115,
-          height: 115,
+          top: '29%',
+          right: '6%',
+          width: 117,
+          height: 114,
           background: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -75,7 +76,7 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
         }}>
           <QRCodeSVG
             value={qrData}
-            size={106}
+            size={110}
             level="H"
             includeMargin={false}
             style={{ display: 'block' }}
@@ -107,7 +108,7 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
         <div
           style={{
             position: 'absolute',
-            top: '58.5%',
+            top: '58.6%',
             left: '6.8%',
             fontFamily: "Helvetica",
             fontSize: 10,
@@ -126,7 +127,7 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
         <div
           style={{
             position: 'absolute',
-            top: '70.5%',
+            top: '70.8%',
             left: '6.8%',
             fontFamily: "Helvetica",
             fontSize: 10,
@@ -145,7 +146,7 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
         <div
           style={{
             position: 'absolute',
-            top: '85%',
+            top: '85.3%',
             left: '7%',
             fontFamily: "Helvetica",
             fontSize: 10,
@@ -163,7 +164,7 @@ const PanCard = ({ data, photoSrc, scanMode, id }: any) => {
           className={signFont.className}
           style={{
             position: 'absolute',
-            top: '79%',
+            top: '78.7%',
             left: '30%',
             fontSize: 22,
             opacity: 0.85,
@@ -252,20 +253,34 @@ export default function PanGeneratorPage() {
     issueDate: '05/08/2023',
   });
 
+  const [bgDataUrl, setBgDataUrl] = useState<string>('/images/PAN FOMAT.jpeg');
+
+  useEffect(() => {
+    // Preload background image as base64 so html-to-image never misses it on download
+    fetch('/images/PAN%20FORMAT.jpeg')
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => setBgDataUrl(reader.result as string);
+        reader.readAsDataURL(blob);
+      })
+      .catch(err => console.error('Failed to preload background:', err));
+  }, []);
+
   const set = (k: keyof PanData) => (v: string) => setData((d) => ({ ...d, [k]: v }));
 
   const generatePan = () => {
     const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', N = '0123456789';
     const r = (n: number, s: string) => Array.from({ length: n }, () => s[Math.floor(Math.random() * s.length)]).join('');
-    
+
     // Extract initials from name (4th letter = First name initial, 5th letter = Surname initial)
     const nameParts = data.name.trim().split(/\s+/);
     const pStatus = 'P'; // 4th letter for Individual is 'P' in Indian PAN format
     const surnameInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1][0].toUpperCase() : (nameParts[0] ? nameParts[0][0].toUpperCase() : 'A');
-    
+
     // In actual PAN, 4th letter is Status (P), user specifically requested first letter of first name for 4th letter and first letter of last name for 5th
     const firstInitial = nameParts[0] ? nameParts[0][0].toUpperCase() : 'A';
-    
+
     set('panNumber')(`${r(3, L)}${firstInitial}${surnameInitial}${r(4, N)}${r(1, L)}`);
   };
 
@@ -290,10 +305,10 @@ export default function PanGeneratorPage() {
     try {
       // Small pause to ensure UI is ready
       await new Promise(r => setTimeout(r, 100));
-      
-      const blob = await toBlob(el, { 
-        pixelRatio: 2, 
-        backgroundColor: '#fff', 
+
+      const blob = await toBlob(el, {
+        pixelRatio: 2,
+        backgroundColor: '#fff',
         cacheBust: true,
       });
 
@@ -305,16 +320,59 @@ export default function PanGeneratorPage() {
       a.download = `PAN-${data.panNumber}.png`;
       document.body.appendChild(a);
       a.click();
-      
+
       setTimeout(() => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 1000);
-    } catch (err) { 
-      console.error('Download error:', err); 
-    } finally { 
-      setIsDownloading(false); 
+    } catch (err) {
+      console.error('Download error:', err);
+    } finally {
+      setIsDownloading(false);
     }
+  };
+
+  const handlePrint = () => {
+    const el = document.getElementById('pan-capture-hidden');
+    if (!el) return;
+
+    const printWin = window.open('', '_blank', 'width=500,height=400');
+    if (!printWin) return;
+
+    const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+      .map(node => node.outerHTML)
+      .join('\n');
+
+    printWin.document.write(`<!DOCTYPE html>
+<html><head>
+<base href="${window.location.origin}" />
+<title>PAN Card PDF</title>
+${styles}
+<style>
+  @page { size: 119mm 77mm; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; }
+  .card-page {
+    width: 119mm;
+    height: 77mm;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+  }
+  .card-page:last-child { page-break-after: auto; }
+</style>
+</head><body>
+  <div class="card-page">${el.outerHTML}</div>
+</body></html>`);
+
+    printWin.document.close();
+    setTimeout(() => {
+      printWin.print();
+      printWin.close();
+    }, 500);
   };
 
   const onPhotoDrop = useCallback((files: File[]) => {
@@ -335,7 +393,7 @@ export default function PanGeneratorPage() {
       {/* NAVBAR */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between py-3 relative">
-          
+
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 flex items-center justify-center bg-white rounded-[6px] shadow-sm overflow-hidden">
               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
@@ -369,7 +427,14 @@ export default function PanGeneratorPage() {
             <a href="/" className="md:hidden text-[10px] bg-slate-800 border border-slate-700 px-2 py-1.5 rounded hover:bg-slate-700 text-white font-semibold">
               <span className="sr-only">Go to </span>Aadhaar
             </a>
+            <button
+              onClick={handlePrint}
+              className="bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-white text-[10px] sm:text-xs font-semibold px-3 py-1.5 sm:py-2 rounded-lg transition-all flex items-center gap-1.5 print:hidden"
+            >
+              Save / Print PDF
+            </button>
           </div>
+
 
         </div>
       </div>
@@ -378,18 +443,18 @@ export default function PanGeneratorPage() {
 
         {/* HIDDEN CAPTURE (Ensures it's always in DOM and visible for html-to-image to work on mobile) */}
         <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
-           <PanCard id="pan-capture-hidden" data={data} photoSrc={photo} scanMode={scanMode} />
+          <PanCard id="pan-capture-hidden" data={data} photoSrc={photo} scanMode={scanMode} bgImage={bgDataUrl || '/images/PAN FORMAT.jpeg'} />
         </div>
 
         {/* LEFT: FORM */}
         <div className="flex flex-col space-y-6">
-          
+
           {/* Mobile Preview */}
           <div className="xl:hidden flex flex-col gap-4 bg-slate-900/60 backdrop-blur-md p-4 rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Preview</h2>
             <div className="flex flex-col items-center justify-center min-h-[220px]">
               <div style={{ transform: 'scale(0.8)', transformOrigin: 'center' }} className="transition-all duration-300">
-                <PanCard data={data} photoSrc={photo} scanMode={scanMode} />
+                <PanCard data={data} photoSrc={photo} scanMode={scanMode} bgImage={bgDataUrl || '/images/PAN FORMAT.jpeg'} />
               </div>
             </div>
           </div>
@@ -466,7 +531,7 @@ export default function PanGeneratorPage() {
 
           <div className="bg-white/5 p-6 rounded-2xl border border-slate-700 shadow-[0_0_50px_rgba(0,0,0,0.5)] max-w-[480px] flex justify-center items-center h-auto mt-2">
             <div className="sm:scale-100 scale-[0.85] origin-center transition-transform hover:scale-[1.02] duration-500">
-              <PanCard data={data} photoSrc={photo} scanMode={scanMode} />
+              <PanCard data={data} photoSrc={photo} scanMode={scanMode} bgImage={bgDataUrl || '/images/PAN FORMAT.jpeg'} />
             </div>
           </div>
         </div>
