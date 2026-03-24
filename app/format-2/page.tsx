@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { toJpeg, toBlob } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
 import { Roboto_Condensed, Roboto_Mono, Great_Vibes } from 'next/font/google';
 
 const roboto = Roboto_Condensed({ subsets: ['latin'], weight: ['400', '500', '700'] });
-const panFont = Roboto_Mono({ subsets: ['latin'], weight: ['700'] });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _panFont = Roboto_Mono({ subsets: ['latin'], weight: ['700'] });
 const signFont = Great_Vibes({ subsets: ['latin'], weight: ['400'] });
 
 interface PanData {
@@ -19,7 +20,8 @@ interface PanData {
   issueDate: string;
 }
 
-const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.jpeg' }: any) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.jpeg' }: { data: PanData; photoSrc: string | null; scanMode: boolean; id?: string; bgImage?: string }) => {
 
   const qrData = `PAN:${data.panNumber}|NAME:${data.name}|FNAME:${data.fatherName}|DOB:${data.dob}|TYPE:INDIVIDUAL|STATUS:ACTIVE|CATEGORY:P|ISSUED:${data.issueDate}|ISSUER:NSDL_E_GOV|AO_CODE:ITO-W-24(3)-DEL|JURISDICTION:DELHI|ADDR:AHMEDABAD,GUJARAT,380015,IN|REF:${data.panNumber}${data.dob.replace(/\//g, '')}|HASH:SHA256:${data.panNumber.split('').map((c: string) => c.charCodeAt(0).toString(16)).join('')}|SIG:INCOME_TAX_DEPT_DIGITAL_CERT_2023|VERIFY:https://www.incometax.gov.in/iec/foportal/verify-pan-details`;
 
@@ -37,7 +39,9 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
       }}
     >
       {/* BACKGROUND */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
+        alt="PAN background"
         src={bgImage}
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         crossOrigin="anonymous"
@@ -48,7 +52,9 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
 
         {/* PHOTO */}
         {photoSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
           <img
+            alt="Portrait"
             src={photoSrc}
             style={{
               position: 'absolute',
@@ -213,13 +219,13 @@ const ddmmyyyyToISO = (ddmm: string) => {
 const handlePanFormat = (raw: string) => raw.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
 const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
-const Field = ({ label, value, onChange, placeholder, error }: any) => (
+const Field = ({ label, value, onChange, placeholder, error }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; error?: string }) => (
   <div className="flex flex-col space-y-2 w-full">
     <label className="text-sm font-semibold text-orange-300 uppercase tracking-wide">{label}</label>
     <input
       type="text"
       value={value}
-      onChange={(e: any) => onChange(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
       placeholder={placeholder}
       className={`bg-slate-800/70 w-full border text-white text-base rounded-lg px-3 py-2 min-h-[44px] focus:outline-none focus:border-orange-500 placeholder:text-slate-500 ${error ? 'border-red-500/70' : 'border-slate-600/50'}`}
     />
@@ -227,7 +233,7 @@ const Field = ({ label, value, onChange, placeholder, error }: any) => (
   </div>
 );
 
-const ActionBtn = ({ onClick, children, className = '' }: any) => (
+const ActionBtn = ({ onClick, children, className = '' }: { onClick: () => void; children: React.ReactNode; className?: string }) => (
   <button
     onClick={onClick}
     className={`bg-slate-700/50 hover:bg-slate-600/70 text-orange-300 hover:text-orange-200 text-[10px] sm:text-xs font-semibold px-3 py-2 rounded transition-colors flex justify-center items-center ${className}`}
@@ -275,7 +281,7 @@ export default function PanGeneratorPage() {
 
     // Extract initials from name (4th letter = First name initial, 5th letter = Surname initial)
     const nameParts = data.name.trim().split(/\s+/);
-    const pStatus = 'P'; // 4th letter for Individual is 'P' in Indian PAN format
+    // 4th letter for Individual is 'P' in Indian PAN format
     const surnameInitial = nameParts.length > 1 ? nameParts[nameParts.length - 1][0].toUpperCase() : (nameParts[0] ? nameParts[0][0].toUpperCase() : 'A');
 
     // In actual PAN, 4th letter is Status (P), user specifically requested first letter of first name for 4th letter and first letter of last name for 5th
