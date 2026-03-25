@@ -263,6 +263,9 @@ export default function CardGeneratorPage() {
     const [autoTranslate, setAutoTranslate] = useState(true);
     const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
+    const [downloadToast, setDownloadToast] = useState<string | null>(null);
+
+    const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 1280;
 
     // Default PDF Data - Exact Match
     const [data, setData] = useState<CardData>({
@@ -362,19 +365,22 @@ export default function CardGeneratorPage() {
     const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
 
     const handleDownload = async (side: 'front' | 'back') => {
-        const id = side === 'front' ? 'aadhaar-front' : 'aadhaar-back';
+        const id = side === 'front' ? 'aadhaar-front-capture' : 'aadhaar-back-capture';
         const element = document.getElementById(id);
         if (!element) return;
 
         setIsDownloading(true);
         try {
+            await new Promise(r => setTimeout(r, 100));
+
+            const ratio = isMobile() ? 3 : 4;
             const blob = await toBlob(element, {
-                pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
+                pixelRatio: ratio,
                 backgroundColor: '#ffffff',
                 cacheBust: true,
             });
 
-            if (!blob) return;
+            if (!blob) throw new Error('Failed to generate image');
             const dataUrl = window.URL.createObjectURL(blob);
             
             const link = document.createElement('a');
@@ -385,15 +391,18 @@ export default function CardGeneratorPage() {
             document.body.appendChild(link);
             link.click();
             
-            // Small delay before cleanup for mobile browser reliability
             setTimeout(() => {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(dataUrl);
             }, 400);
 
             setIsDownloadModalOpen(false);
+            setDownloadToast(`${side === 'front' ? 'Front' : 'Back'} card downloaded! (${ratio}x HQ)`);
+            setTimeout(() => setDownloadToast(null), 3000);
         } catch (err) {
             console.error('Download failed', err);
+            setDownloadToast('Download failed. Please try again.');
+            setTimeout(() => setDownloadToast(null), 3000);
         } finally {
             setIsDownloading(false);
         }
@@ -417,6 +426,21 @@ export default function CardGeneratorPage() {
 
     return (
         <main className="min-h-screen bg-slate-900 text-white">
+            {/* ─── Hidden Off-Screen Capture Elements (always in DOM for mobile download) ─── */}
+            <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
+                <div id="aadhaar-front-capture"><FrontCard data={data} photoSrc={photo} /></div>
+                <div id="aadhaar-back-capture"><BackCard data={data} /></div>
+            </div>
+
+            {/* ─── Download Success Toast ─── */}
+            {downloadToast && (
+                <div className="fixed top-4 right-4 z-[200] animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="bg-emerald-600/90 backdrop-blur-md text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-bold flex items-center gap-2 border border-emerald-500/50">
+                        <span className="text-lg">✅</span> {downloadToast}
+                    </div>
+                </div>
+            )}
+
             <style>{`
         @media print {
           body * { visibility: hidden !important; }

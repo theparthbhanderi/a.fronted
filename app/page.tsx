@@ -320,6 +320,9 @@ export default function CardGeneratorPage() {
   const [autoTranslate, setAutoTranslate] = useState(true);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadToast, setDownloadToast] = useState<string | null>(null);
+
+  const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 1280;
 
   // ─── Transliteration Helper ───
   const transliterate = async (text: string, field: 'name' | 'address') => {
@@ -442,19 +445,23 @@ export default function CardGeneratorPage() {
   const generateUpdateDate = () => set('updateDate')(getRandomDate(2012, 2025));
 
   const handleDownload = async (side: 'front' | 'back') => {
-    const id = side === 'front' ? 'aadhaar-front' : 'aadhaar-back';
+    const id = side === 'front' ? 'aadhaar-front-capture' : 'aadhaar-back-capture';
     const element = document.getElementById(id);
     if (!element) return;
 
     setIsDownloading(true);
     try {
+      // Small pause to ensure DOM is ready
+      await new Promise(r => setTimeout(r, 100));
+
+      const ratio = isMobile() ? 3 : 4;
       const blob = await toBlob(element, {
-        pixelRatio: 2, // Standard high quality, much safer for mobile memory/canvas limits
+        pixelRatio: ratio,
         backgroundColor: '#ffffff',
         cacheBust: true,
       });
 
-      if (!blob) return;
+      if (!blob) throw new Error('Failed to generate image');
       const dataUrl = window.URL.createObjectURL(blob);
       
       const link = document.createElement('a');
@@ -472,8 +479,12 @@ export default function CardGeneratorPage() {
       }, 400);
 
       setIsDownloadModalOpen(false);
+      setDownloadToast(`${side === 'front' ? 'Front' : 'Back'} card downloaded! (${ratio}x HQ)`);
+      setTimeout(() => setDownloadToast(null), 3000);
     } catch (err) {
       console.error('Download failed', err);
+      setDownloadToast('Download failed. Please try again.');
+      setTimeout(() => setDownloadToast(null), 3000);
     } finally {
       setIsDownloading(false);
     }
@@ -566,6 +577,21 @@ export default function CardGeneratorPage() {
 
   return (
     <main className="min-h-screen bg-slate-900 text-white" suppressHydrationWarning>
+
+      {/* ─── Hidden Off-Screen Capture Elements (always in DOM for mobile download) ─── */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', pointerEvents: 'none' }}>
+        <div id="aadhaar-front-capture"><FrontCard data={data} photoSrc={photo} /></div>
+        <div id="aadhaar-back-capture"><BackCard data={data} /></div>
+      </div>
+
+      {/* ─── Download Success Toast ─── */}
+      {downloadToast && (
+        <div className="fixed top-4 right-4 z-[200] animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="bg-emerald-600/90 backdrop-blur-md text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-bold flex items-center gap-2 border border-emerald-500/50">
+            <span className="text-lg">✅</span> {downloadToast}
+          </div>
+        </div>
+      )}
 
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
@@ -873,11 +899,11 @@ export default function CardGeneratorPage() {
           <div id="card-preview" ref={previewRef} className="flex flex-col gap-4 bg-white/5 p-4 rounded-xl border border-slate-700 shadow-2xl">
             <div>
               <p className="text-[10px] text-slate-400 mb-1.5 ml-1 uppercase tracking-widest font-semibold">— Front</p>
-              <div id="aadhaar-front"><FrontCard data={data} photoSrc={photo} /></div>
+              <FrontCard data={data} photoSrc={photo} />
             </div>
             <div>
               <p className="text-[10px] text-slate-400 mb-1.5 ml-1 uppercase tracking-widest font-semibold">— Back</p>
-              <div id="aadhaar-back"><BackCard data={data} /></div>
+              <BackCard data={data} />
             </div>
           </div>
         </div>

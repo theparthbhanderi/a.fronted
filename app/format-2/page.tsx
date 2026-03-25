@@ -74,7 +74,7 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
           top: '29%',
           right: '6%',
           width: 117,
-          height: 114,
+          height: 117,
           background: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -82,7 +82,7 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
         }}>
           <QRCodeSVG
             value={qrData}
-            size={110}
+            size={113}
             level="H"
             includeMargin={false}
             style={{ display: 'block' }}
@@ -153,7 +153,7 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
           style={{
             position: 'absolute',
             top: '85.3%',
-            left: '7%',
+            left: '7.1%',
             fontFamily: "Helvetica",
             fontSize: 10,
             fontWeight: 600,
@@ -187,7 +187,7 @@ const PanCard = ({ data, photoSrc, scanMode, id, bgImage = '/images/PAN FORMAT.j
           className={roboto.className}
           style={{
             position: 'absolute',
-            bottom: '21.7%',
+            bottom: '21.75%',
             right: '6%',
             fontSize: 10.5,
             color: '#000'
@@ -248,14 +248,17 @@ const ActionBtn = ({ onClick, children, className = '' }: { onClick: () => void;
 export default function PanGeneratorPage() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadToast, setDownloadToast] = useState<string | null>(null);
   const [scanMode, setScanMode] = useState(false);
 
+  const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 1280;
+
   const [data, setData] = useState<PanData>({
-    name: 'PARTH BHANDERI',
-    fatherName: 'RAMESHBHAI BHANDERI',
+    name: 'GOVIND MAHESHBHAI RAMANI',
+    fatherName: 'MAHESHBHAI GORDHANBHAI RAMANI',
     dob: '26/06/2005',
-    panNumber: 'HJKPB7081Q',
-    signature: 'Parth Bhanderi',
+    panNumber: 'HHDGR7346E',
+    signature: 'Govind Ramani',
     issueDate: '05/08/2023',
   });
 
@@ -309,11 +312,11 @@ export default function PanGeneratorPage() {
     if (!el) return;
     setIsDownloading(true);
     try {
-      // Small pause to ensure UI is ready
       await new Promise(r => setTimeout(r, 100));
 
+      const ratio = isMobile() ? 3 : 4;
       const blob = await toBlob(el, {
-        pixelRatio: 2,
+        pixelRatio: ratio,
         backgroundColor: '#fff',
         cacheBust: true,
       });
@@ -331,8 +334,13 @@ export default function PanGeneratorPage() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 1000);
+
+      setDownloadToast(`PAN card downloaded! (${ratio}x HQ)`);
+      setTimeout(() => setDownloadToast(null), 3000);
     } catch (err) {
       console.error('Download error:', err);
+      setDownloadToast('Download failed. Please try again.');
+      setTimeout(() => setDownloadToast(null), 3000);
     } finally {
       setIsDownloading(false);
     }
@@ -395,6 +403,15 @@ ${styles}
 
   return (
     <main className="min-h-screen bg-slate-900 text-white" suppressHydrationWarning>
+
+      {/* ─── Download Success Toast ─── */}
+      {downloadToast && (
+        <div className="fixed top-4 right-4 z-[200] animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="bg-emerald-600/90 backdrop-blur-md text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-bold flex items-center gap-2 border border-emerald-500/50">
+            <span className="text-lg">✅</span> {downloadToast}
+          </div>
+        </div>
+      )}
 
       {/* NAVBAR */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
