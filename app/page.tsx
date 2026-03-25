@@ -35,8 +35,8 @@ const DynamicQR = ({ data }: { data: CardData }) => {
 
   // Standard Aadhaar QR data + high-density signature payload to match official scan complexity
   const signature = "MIIEPgYJKoZIhvcNAQcCoIIELzCCBysCAQExADALBgkqhkiG9w0BBwGgggSVMIIDkTCCAnmgAwIBAgIIYmJSUWqT1jkwDQYJKoZIhvcNAQEFBQAwRTELMAkGA1UEBhMCSU4xEDAOBgNVBAoTBzQzM2QwZDEwO" +
-                    "SDAuBgNVBAsTJ0NlcnRpZmljYXRpb24gQXV0aG9yaXJ5IEluZGlhIChDQUktVUlEQUkpMRYwFAYDVQQDEw1VSURBSSBDQS0yMDE0MB4XDTE0MDEyMzA3NDUzOFoXDTI0MDEyMTA3NDUzOFowRTELMAkGA1UEBhMCSU4x" +
-                    "EDAOBgNVBAoTBzQzM2QwZDEwO";
+    "SDAuBgNVBAsTJ0NlcnRpZmljYXRpb24gQXV0aG9yaXJ5IEluZGlhIChDQUktVUlEQUkpMRYwFAYDVQQDEw1VSURBSSBDQS0yMDE0MB4XDTE0MDEyMzA3NDUzOFoXDTI0MDEyMTA3NDUzOFowRTELMAkGA1UEBhMCSU4x" +
+    "EDAOBgNVBAoTBzQzM2QwZDEwO";
 
   const qrValue = `<?xml version="1.0" encoding="UTF-8"?><PrintLetterBarcodeData uid="${uid}" name="${data.nameEnglish}" gender="${data.gender.charAt(0).toUpperCase()}" yob="${yob}" co="${data.nameEnglish}" house="" street="" lm="" loc="" vtc="" dist="Anand" state="Gujarat" pc="364505" dob="${data.dob}" address="${addr}" signature="${signature}" />`;
 
@@ -155,7 +155,7 @@ const FrontCard = ({ data, photoSrc }: { data: CardData, photoSrc: string | null
     </div>
 
     {/* ── Footer with red line above ── */}
-    <div style={{ borderTop: '2px solid #cc3333', flexShrink: 0 }}>
+    <div style={{ borderTop: '2.7px solid #cc3333', flexShrink: 0 }}>
       <img
         src="/images/front-card-logo.png?v=2"
         alt="Front Footer"
@@ -234,7 +234,7 @@ const BackCard = ({ data }: { data: CardData }) => (
     </div>
 
     {/* ── Footer with red line ── */}
-    <div style={{ height: 21.5, width: '100%', borderTop: '2px solid #cc3333', flexShrink: 0 }}>
+    <div style={{ height: 21.5, width: '100%', borderTop: '2.7px solid #cc3333', flexShrink: 0 }}>
       <img
         src="/images/back-header-logo.png?v=2"
         alt="Back Footer"
@@ -370,13 +370,13 @@ export default function CardGeneratorPage() {
     try {
       const res = await fetch(`https://inputtools.google.com/request?text=${encodeURIComponent(queryText)}&itc=gu-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&app=test`);
       const json = await res.json();
-      
+
       if (json[0] === 'SUCCESS' && Array.isArray(json[1])) {
         // Join all returned chunks to preserve the \n boundaries perfectly
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const fullTranslatedString = json[1].map((chunk: any) => chunk[1][0]).join('');
         const translatedWords = fullTranslatedString.split('\n');
-        
+
         // Replace the English words in the original processedText with their translations
         uniqueEnglishWords.forEach((word, idx) => {
           if (translatedWords[idx]) {
@@ -388,7 +388,7 @@ export default function CardGeneratorPage() {
 
         // Convert Gujarati numbers back to English numerals
         processedText = processedText.replace(/[૦-૯]/g, (m: string) => "0123456789"["૦૧૨૩૪૫૬૭૮૯".indexOf(m)]);
-        
+
         if (field === 'name') setData(d => ({ ...d, nameLocal: processedText }));
         else setData(d => ({ ...d, addressLocal: processedText }));
       }
@@ -463,15 +463,15 @@ export default function CardGeneratorPage() {
 
       if (!blob) throw new Error('Failed to generate image');
       const dataUrl = window.URL.createObjectURL(blob);
-      
+
       const link = document.createElement('a');
       link.style.display = 'none';
       link.href = dataUrl;
       link.download = `aadhaar-${side}-${data.idNumber.replace(/\s/g, '')}.png`;
-      
+
       document.body.appendChild(link);
       link.click();
-      
+
       // Small delay before cleanup for mobile browser reliability
       setTimeout(() => {
         document.body.removeChild(link);
@@ -538,8 +538,8 @@ export default function CardGeneratorPage() {
   });
 
   const handlePrint = () => {
-    const frontEl = document.getElementById('aadhaar-front');
-    const backEl = document.getElementById('aadhaar-back');
+    const frontEl = document.getElementById('aadhaar-front-capture');
+    const backEl = document.getElementById('aadhaar-back-capture');
     if (!frontEl || !backEl) return;
 
     const printWin = window.open('', '_blank', 'width=500,height=400');
@@ -596,7 +596,7 @@ export default function CardGeneratorPage() {
       {/* ─── Sticky Header ─── */}
       <div className="border-b border-slate-700/60 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-[420px] xl:max-w-7xl mx-auto px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 relative">
-          
+
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shrink-0 bg-white rounded-lg shadow-sm overflow-hidden">
@@ -609,7 +609,7 @@ export default function CardGeneratorPage() {
                 <p className="text-[10px] sm:text-xs text-emerald-400 font-semibold mt-0.5">Pixel-Perfect Document Mode</p>
               </div>
             </div>
-            
+
             <a href="/format-2" className="xl:hidden sm:hidden text-[10px] bg-slate-800 border border-slate-700 px-2 py-1.5 rounded hover:bg-slate-700 text-white font-semibold">
               <span className="sr-only">Go to </span>PAN
             </a>
@@ -644,13 +644,13 @@ export default function CardGeneratorPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Preview</h2>
               <div className="flex bg-slate-800 p-1 rounded-lg border border-slate-700">
-                <button 
+                <button
                   onClick={() => setActiveTab('front')}
                   className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'front' ? 'bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                 >
                   Front
                 </button>
-                <button 
+                <button
                   onClick={() => setActiveTab('back')}
                   className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all ${activeTab === 'back' ? 'bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                 >
@@ -658,15 +658,15 @@ export default function CardGeneratorPage() {
                 </button>
               </div>
             </div>
-            
+
             <div className="flex flex-col items-center justify-center min-h-[220px]">
               {activeTab === 'front' ? (
                 <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }} className="transition-all duration-300 animate-in fade-in zoom-in-95">
-                   <FrontCard data={data} photoSrc={photo} />
+                  <FrontCard data={data} photoSrc={photo} />
                 </div>
               ) : (
                 <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }} className="transition-all duration-300 animate-in fade-in zoom-in-95">
-                   <BackCard data={data} />
+                  <BackCard data={data} />
                 </div>
               )}
             </div>
@@ -711,7 +711,7 @@ export default function CardGeneratorPage() {
                 <span className="w-5 h-5 bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold rounded-full text-[10px] flex items-center justify-center font-bold">2</span>
                 Front Card Details
               </h2>
-              <div 
+              <div
                 onClick={() => setAutoTranslate(!autoTranslate)}
                 className="flex items-center gap-3 cursor-pointer group select-none"
               >
@@ -725,14 +725,14 @@ export default function CardGeneratorPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Names */}
-              <Field 
-                label="Name (English)" 
-                value={data.nameEnglish} 
+              <Field
+                label="Name (English)"
+                value={data.nameEnglish}
                 onChange={(v) => {
                   set('nameEnglish')(v);
                   if (autoTranslate) transliterate(v, 'name');
-                }} 
-                error={nameEnError} 
+                }}
+                error={nameEnError}
               />
               <Field label="Name (Gujarati)" value={data.nameLocal} onChange={set('nameLocal')} error={nameGuError} />
 
@@ -829,14 +829,14 @@ export default function CardGeneratorPage() {
               Back Card Details
             </h2>
             <div className="grid grid-cols-1 gap-4">
-              <Field 
-                label="Address (English)" 
-                value={data.addressEnglish} 
+              <Field
+                label="Address (English)"
+                value={data.addressEnglish}
                 onChange={(v) => {
                   set('addressEnglish')(v);
                   if (autoTranslate) transliterate(v, 'address');
-                }} 
-                isTextArea 
+                }}
+                isTextArea
               />
               <Field label="Address (Gujarati)" value={data.addressLocal} onChange={set('addressLocal')} isTextArea />
 
@@ -885,7 +885,7 @@ export default function CardGeneratorPage() {
               <h2 className="text-sm font-bold text-white">Live Preview</h2>
               <span className="text-[10px] bg-emerald-900/50 border border-emerald-700/40 text-emerald-300 px-2 py-0.5 rounded-full">100% Perfect Ditto</span>
             </div>
-            <button 
+            <button
               onClick={() => setIsDownloadModalOpen(true)}
               className="text-[10px] font-bold uppercase tracking-widest text-orange-400 hover:text-white transition-colors flex items-center gap-1.5"
             >
@@ -936,7 +936,7 @@ export default function CardGeneratorPage() {
       {/* ─── Download Selection Modal ─── */}
       {isDownloadModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
             onClick={() => !isDownloading && setIsDownloadModalOpen(false)}
           />
@@ -945,9 +945,9 @@ export default function CardGeneratorPage() {
               <h3 className="text-xl font-bold text-white">Download Card</h3>
               <p className="text-sm text-slate-400 mt-1">Select card side for HQ PNG export</p>
             </div>
-            
+
             <div className="p-4 grid grid-cols-1 gap-3">
-              <button 
+              <button
                 onClick={() => handleDownload('front')}
                 disabled={isDownloading}
                 className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-gradient-to-r from-orange-500 via-white to-green-600 !text-slate-900 border-none font-bold/20 border border-slate-700 hover:border-orange-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
@@ -968,7 +968,7 @@ export default function CardGeneratorPage() {
                 </div>
               </button>
 
-              <button 
+              <button
                 onClick={() => handleDownload('back')}
                 disabled={isDownloading}
                 className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-emerald-600/20 border border-slate-700 hover:border-emerald-500 rounded-2xl transition-all group active:scale-[0.98] disabled:opacity-50"
@@ -990,7 +990,7 @@ export default function CardGeneratorPage() {
               </button>
             </div>
 
-            <button 
+            <button
               onClick={() => setIsDownloadModalOpen(false)}
               disabled={isDownloading}
               className="w-full py-4 text-sm font-bold text-slate-500 hover:text-white transition-colors bg-slate-900/50"
